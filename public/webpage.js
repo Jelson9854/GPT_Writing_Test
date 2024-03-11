@@ -2312,42 +2312,141 @@
         W = CodeMirror.fromTextArea(document.getElementById("editor-record"), {
           mode: "null",
           autoCloseBrackets: !0,
-          lineWrapping: true
+          lineWrapping: true,
         }),
         J = new P(W),
         q = "";
       J.listen(),
         (document.getElementById("submission").onclick = function () {
-          (q = J.getRecords())
-          console.log(JSON.parse(q))
+          q = J.getRecords();
+          console.log(JSON.parse(q));
+          console.log(JSON.stringify(JSON.parse(q), null, 2));
+
           "" !== q
-          ? (console.log("operations added"), Q.addOperations(q), (q = ""))
-          : console.log("no operation to be added");;
+            ? (console.log("operations added"), Q.addOperations(q), (q = ""))
+            : console.log("no operation to be added");
         }),
-        
-        W.setValue("// Please write your response here. Hit the Submit Everything button when finished");
+        W.setValue(
+          "// Please write your response here. Hit the 'Submit Everything' button when finished"
+        );
     })();
 })();
 
-document.getElementById('ask').addEventListener("click", function() {
-    chatbox = document.getElementById('chat-area')
-    btn = document.getElementById('ask')
-  
-    chatbox.classList.remove("side-panel-hidden")   
-    chatbox.classList.add("side-panel")
-    
-    btn.classList.remove('side-panel')
-    btn.classList.add("side-panel-hidden")
-  });
-  
-  document.getElementById('hide').onclick = function() {
-    console.log("hide button clicekd")
-    chatbox = document.getElementById('chat-area')
-    btn = document.getElementById('ask')
-  
-    chatbox.classList.remove("side-panel")
-    chatbox.classList.add("side-panel-hidden")
-    
-    btn.classList.remove('side-panel-hidden')
-    btn.classList.add("side-panel")
+// URL where you want to send the POST request
+const url = "http://localhost:3000/chat";
+
+var messageChain = [
+  {
+    role: "system",
+    content:
+      "You are a helpful writing assistant. Please answer any questions that users may have so that they can complete their essay.",
+  },
+];
+
+let mess = JSON.stringify(messageChain);
+localStorage.setItem("ChatMessages", mess);
+
+document.getElementById("chat-btn").onclick = function () {
+  ques = document.getElementById("input").value;
+  console.log(ques);
+  chatbox = document.getElementById("chat-area");
+  user_div = document.createElement("div");
+  user_div.classList.add("chat-bubble-user");
+  user_div.innerHTML = ques;
+  chatbox.appendChild(user_div);
+  if (ques != "") {
+    messageChain.push({
+      role: "user",
+      content: ques,
+    });
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Adjust the content type based on your API requirements
+        // Add any additional headers if needed
+      },
+      body: JSON.stringify(messageChain), // Convert data to JSON format
+    };
+
+    // Making the POST request using fetch
+    fetch(url, requestOptions)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json(); // If expecting JSON response
+      })
+      .then((data) => {
+        console.log("POST request successful:", data);
+        bot_div = document.createElement("div");
+        bot_div.classList.add("chat-bubble-bot");
+        ans = data[data.length-1]['content']
+        bot_div.innerHTML = ans;
+        chatbox.appendChild(bot_div);
+        messageChain = data;
+        mess = JSON.stringify(data);
+        localStorage.setItem("ChatMessages", mess);
+        // Handle the response data as needed
+      })
+      .catch((error) => {
+        console.error("Error during POST request:", error);
+        // Handle errors
+      });
+
+    document.getElementById("input").value = "";
   }
+  console.log(messageChain);
+}
+// askbtn.addEventListener("click", () => {
+//   ques = document.getElementById("input").value;
+//   console.log(ques);
+//   chatbox = document.getElementById("chat-area");
+//   user_div = document.createElement("div");
+//   user_div.classList.add("chat-bubble-user");
+//   user_div.innerHTML = ques;
+//   chatbox.appendChild(user_div);
+//   if (ques != "") {
+//     messageChain.push({
+//       role: "user",
+//       content: ques,
+//     });
+//     const requestOptions = {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json", // Adjust the content type based on your API requirements
+//         // Add any additional headers if needed
+//       },
+//       body: JSON.stringify(messageChain), // Convert data to JSON format
+//     };
+
+//     // Making the POST request using fetch
+//     fetch(url, requestOptions)
+//       .then((response) => {
+//         if (!response.ok) {
+//           throw new Error(`HTTP error! Status: ${response.status}`);
+//         }
+//         return response.json(); // If expecting JSON response
+//       })
+//       .then((data) => {
+//         console.log("POST request successful:", data);
+//         bot_div = document.createElement("div");
+//         bot_div.classList.add("chat-bubble-bot");
+//         ans = data[data.length-1]['content']
+//         bot_div.innerHTML = ans;
+//         chatbox.appendChild(bot_div);
+//         messageChain = data;
+//         mess = JSON.stringify(data);
+//         localStorage.setItem("ChatMessages", mess);
+//         // Handle the response data as needed
+//       })
+//       .catch((error) => {
+//         console.error("Error during POST request:", error);
+//         // Handle errors
+//       });
+
+//     document.getElementById("input").value = "";
+//   }
+//   console.log(messageChain);
+// });
+
+// get vs post
