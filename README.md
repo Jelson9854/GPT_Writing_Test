@@ -2,7 +2,7 @@
 
 Each folder will need to be run for the project to be successful
 
-## MY-AI-APP instructions
+## My-ai-app instructions
 
 Initialize the environment and install dependencies
 
