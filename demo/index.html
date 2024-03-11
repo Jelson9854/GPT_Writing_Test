@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Write a Paper!</title>
+    <link rel="stylesheet" href="//codemirror.net/5/lib/codemirror.css">
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <div id = 'container' class="container">
+      <div class="content">
+        <div class="question">
+          <h1>Tell me about an experience that you had in college</h1>
+        </div>
+        <main class="editors">
+          <div>
+            <textarea id="editor-record">'Please write your response to the essay question here. When finished, click Recorder: Get records then Player: Add operations.'</textarea>
+          </div>
+        </main>
+        <div class="control-buttons">
+          <button id="submission">Submit Everything</button>
+        </div>
+      </div>
+      <button id="ask" class="side-panel">Ask AI</button>
+      <div class="side-panel-hidden" id="chat-area">
+      <div class="submit-form">
+          <div class="input">
+              <textarea name="input" id="input" cols="40" rows="3"></textarea>
+              <button id="chat">Ask!</button>
+          </div>    
+      </div>
+      <button id="hide">Hide AI</button>
+    </div>   
+  </div> 
+    <script src="//codemirror.net/5/lib/codemirror.js"></script>
+    <script src="//codemirror.net/5/mode/javascript/javascript.js"></script>
+    <script src="//codemirror.net/5/addon/edit/closebrackets.js"></script>
+    <script src="./main.js"></script>
+    <script src="./index.js"></script>
+  </body>
+</html>
