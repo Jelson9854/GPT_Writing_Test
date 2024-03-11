@@ -91,6 +91,14 @@ export default function Webpage() {
             <Modal.Title className="modal-header">Enter Your Email</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <p>
+              Instructions for use:
+              <br />
+              Enter your email to start the assignment. The text box starts recording immediately. If you wish to use ChatGPT please 
+              click the ChatGPT tab. Upon completion hit the submit button. If you leave the page we will not store your data, so you 
+              will lose your response. Only hit the submission button once at the end to not overwrite your data.
+            </p>
+            <br />
             <Form onSubmit={onFormSubmit}>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>Email address</Form.Label>

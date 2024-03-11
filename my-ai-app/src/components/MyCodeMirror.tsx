@@ -55,7 +55,6 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>((props
 
   // Check if the user clicked "OK"
   if (isConfirmed) {
-
   if (codeRecorderRef.current) {
      const recordsString = codeRecorderRef.current.getRecords();
      console.log(recordsString); // This should log the string representation of the array
@@ -81,6 +80,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>((props
        props.sendToDB(recordsArray)
          .then(response => {
            console.log('Data sent successfully:', response);
+           alert('Thank you for your submission')
          })
          .catch(error => {
            console.error('Error sending data:', error);

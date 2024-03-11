@@ -15,8 +15,6 @@ You can use yarn or pnpm if desired (I don't recall the syntax)
 After initializing run the following command to start the environment
 
 ```bash
-npm start 
-# or
 npm run dev
 ```
 
