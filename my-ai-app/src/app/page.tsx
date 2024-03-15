@@ -1,32 +1,35 @@
-"use client";
 import "bootstrap/dist/css/bootstrap.css";
 import "./globals.css";
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  Container,
+  Row,
+  Tabs,
+  Tab,
+  Modal,
+  Form,
+  Button,
+} from "react-bootstrap";
+import MyCodeMirrorComponent from "../components/MyCodeMirror";
 import { useChat } from "ai/react";
-import { Container, Row, Tabs, Tab } from "react-bootstrap";;
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import MyCodeMirrorComponent from '../components/MyCodeMirror'; // Adjust the import path as necessary
+import Image from "next/image";
 
 export default function Webpage() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
-  const [recordingData, setRecordingData] = React.useState([]);
-  const [ID, setID] = React.useState("");
-  const [user_email, setUserEmail] = React.useState("");
-  const [show, setShow] = React.useState(false);
+  const [recordingData, setRecordingData] = useState([]);
+  const [ID, setID] = useState("");
+  const [user_email, setUserEmail] = useState("");
+  const [show, setShow] = useState(false);
   useEffect(() => {
-    if(show === false)
-    {
-      setShow(true)
-      console.log(process.env.OPEN_AI_KEY)
+    if (show === false) {
+      setShow(true);
     }
-  }, [])
+  }, [show]);
 
   const handleClose = () => {
     setShow(false);
-  }
+  };
 
   const onFormSubmit = (e) => {
     e.preventDefault();
@@ -34,54 +37,48 @@ export default function Webpage() {
     setUserEmail(em);
     sendDataToServer(0);
     handleClose();
-   };
-
-  useEffect(  () => {
-    // const recorder = document.getElementById('editor-record')
-    // const codeRecorder = new CodeRecord(recorder);
-
-    // console.log(codeRecorder)
-
-    // codeRecorder.listen()
-
-    window.addEventListener('beforeunload', function (e) {
-      e.preventDefault();
-      e.returnValue = 'Do you want to leave the page?';
-      setTimeout(function () { // Timeout to wait for user response
-          setTimeout(function () { // Timeout to wait onunload, if not fired then this will be executed
-              console.log('User stayed on the page.');
-      }, 50)}, 50);
-      return 'Do you want to leave the page?';
-  });
-  })
+  };
 
   useEffect(() => {
-    console.log('ID state changed:', ID);
-   }, [ID]);
+    window.addEventListener("beforeunload", function (e) {
+      e.preventDefault();
+      e.returnValue = "Do you want to leave the page?";
+      setTimeout(function () {
+        // Timeout to wait for user response
+        setTimeout(function () {
+          // Timeout to wait onunload, if not fired then this will be executed
+          console.log("User stayed on the page.");
+        }, 50);
+      }, 50);
+      return "Do you want to leave the page?";
+    });
+  });
 
+  useEffect(() => {
+    console.log("ID state changed:", ID);
+  }, [ID]);
 
-   const sendDataToServer = async (type) => {
-    if(type === 1) {
-    
+  const sendDataToServer = async (type) => {
+    if (type === 1) {
     }
     try {
-       console.log('sending to server');
-       let thingy = await sendToDB(
-         user_email,
-         messages,
-         recordingData,
-         ID,
-         type,
-       );
-       console.log(thingy);
-       if (type === 0 && thingy) {
-         setID(thingy);
-         console.log('ID updated:', ID); // This might not log the updated ID immediately due to state update batching
-       }
+      console.log("sending to server");
+      let thingy = await sendToDB(
+        user_email,
+        messages,
+        recordingData,
+        ID,
+        type
+      );
+      console.log(thingy);
+      if (type === 0 && thingy) {
+        setID(thingy);
+        console.log("ID updated:", ID); // This might not log the updated ID immediately due to state update batching
+      }
     } catch (error) {
-       console.error('Error sending data:', error);
+      console.error("Error sending data:", error);
     }
-   };
+  };
 
   return (
     <>
@@ -94,32 +91,37 @@ export default function Webpage() {
             <p>
               Instructions for use:
               <br />
-              Enter your email to start the assignment. The text box starts recording immediately. If you wish to use ChatGPT please 
-              click the ChatGPT tab. Upon completion hit the submit button. If you leave the page we will not store your data, so you 
-              will lose your response. Only hit the submission button once at the end to not overwrite your data.
+              Enter your email to start the assignment. The text box starts
+              recording immediately. If you wish to use ChatGPT please click the
+              ChatGPT tab. Upon completion hit the submit button. If you leave
+              the page we will not store your data, so you will lose your
+              response. Only hit the submission button once at the end to not
+              overwrite your data.
             </p>
             <br />
             <Form onSubmit={onFormSubmit}>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="name@example.com"
-                autoFocus
-                value={user_email}
-                onChange={(e) => setUserEmail(e.target.value)}
-              />
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
+                <Form.Label>Email address</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="name@example.com"
+                  autoFocus
+                  value={user_email}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                />
               </Form.Group>
-              <Button variant="secondary" type='submit'>
+              <Button variant="secondary" type="submit">
                 Submit
-                </Button>
+              </Button>
             </Form>
           </Modal.Body>
         </Modal>
         <Row className="justify-content">
           <Tabs justify variant="tabs" defaultActiveKey={"prompt"}>
             <Tab eventKey="prompt" title="Writing" className="content">
-
               <div className="margins"></div>
               <div className="question">
                 <p>
@@ -188,10 +190,13 @@ export default function Webpage() {
                 </div>
               </div>
               <main className="editors">
-                  <MyCodeMirrorComponent sendToDB={(recordingData) => sendToDB(user_email, messages, recordingData, ID, 1)} 
+                <MyCodeMirrorComponent
+                  sendToDB={(recordingData) =>
+                    sendToDB(user_email, messages, recordingData, ID, 1)
+                  }
                   updateRecordingData={setRecordingData}
-                  />
-                  {/* <textarea
+                />
+                {/* <textarea
                     id="editor-record"
                     defaultValue="Please write your response to the essay question here. When finished, click Recorder: Get records then Player: Add operations."
                   ></textarea> */}
@@ -211,19 +216,23 @@ export default function Webpage() {
                       }
                     >
                       <div className="chat-icon">
-                        <img
-                          className="chatgpt-icon"
+                        <Image
                           src={
                             m.role === "user"
-                              ? "images/user-icon.png"
-                              : "images/chatgpt-icon.png"
+                              ? "/images/user-icon.png"
+                              : "/images/chatgpt-icon.png"
                           }
-                        ></img>
-                        <div className="identity-bold">    {m.role === "user" ? "User" : "ChatGPT"}</div>
+                          alt={m.role === "user" ? "User" : "ChatGPT"}
+                          className="chatgpt-icon"
+                        />
+                        <div className="identity-bold">
+                          {" "}
+                          {m.role === "user" ? "User" : "ChatGPT"}
+                        </div>
                       </div>
                       <div className="whitespace-pre-wrap identity">
                         {m.content}
-                        </div>
+                      </div>
                     </div>
                   ))}
                   <form
@@ -248,39 +257,38 @@ export default function Webpage() {
   );
 }
 
-async function sendToDB(user_email, mess, recording, id, type){
+async function sendToDB(user_email, mess, recording, id, type) {
   if (type == 0) {
     try {
-        // Make an asynchronous request to the server
-        const response = await axios.post('http://localhost:8080/save_id', {
-            email: user_email,
-            messages: mess,
-            rec_thingy: recording,
-        });
-        console.log(response.data)
+      // Make an asynchronous request to the server
+      const response = await axios.post("http://localhost:8080/save_id", {
+        email: user_email,
+        messages: mess,
+        rec_thingy: recording,
+      });
+      console.log(response.data);
 
-        id = response.data.data._id;
-        // Extract the tweetID from the response
-        return id;
+      id = response.data.data._id;
+      // Extract the tweetID from the response
+      return id;
     } catch (error) {
-        console.error("Error saving email:", error);
-        throw error; // Propagate the error further if needed
+      console.error("Error saving email:", error);
+      throw error; // Propagate the error further if needed
     }
+  } else {
+    try {
+      // Make an asynchronous request to the server
+      const response = await axios.post("http://localhost:8080/submission", {
+        __id: id,
+        email: user_email,
+        messages: mess,
+        rec_thingy: recording,
+      });
+      console.log(response.data);
+      console.log(mess);
+    } catch (error) {
+      console.error("Error saving to database:", error);
+      throw error; // Propagate the error further if needed
     }
-    else {
-      try {
-          // Make an asynchronous request to the server
-          const response = await axios.post('http://localhost:8080/submission', {
-            __id: id,
-            email: user_email,
-            messages: mess,
-            rec_thingy: recording,
-        });
-        console.log(response.data)
-        console.log(mess)
-      } catch (error) {
-          console.error("Error saving to database:", error);
-          throw error; // Propagate the error further if needed
-      }
-    }  
   }
+}
