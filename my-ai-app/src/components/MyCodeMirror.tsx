@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, useImperativeHandle, forwardRef } from 'react';
+import React, { useEffect, useRef, useCallback, useImperativeHandle, forwardRef, useState } from 'react';
 import CodeMirror from 'codemirror';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css'; // Example theme
@@ -17,7 +17,7 @@ interface CodeRecordInstance {
 const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>((props, ref) => {
  const codeMirrorRef = useRef(null);
  const codeRecorderRef = useRef<CodeRecordInstance | null>(null);
- let count = 0;
+ const [count, setCount] = useState(0);
 
  useEffect(() => {
     if (codeMirrorRef.current && count === 0) {
@@ -28,7 +28,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>((props
         theme: 'material',
       });
 
-      count = 1;
+      setCount(1)
 
       // Initialize codemirror-record with the CodeMirror instance
       const codeRecorder = new CodeRecord(codeMirrorInstance);
@@ -105,5 +105,8 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>((props
  );
 });
 
+
+
+MyCodeMirrorComponent.displayName = 'MyCodeMirrorComponent';
 
 export default React.memo(MyCodeMirrorComponent);
