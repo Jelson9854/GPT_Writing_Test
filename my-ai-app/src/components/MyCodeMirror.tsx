@@ -20,7 +20,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>((props
  const [count, setCount] = useState(0);
 
  useEffect(() => {
-    if (codeMirrorRef.current && count === 0) {
+    if (typeof window !== 'undefined' && codeMirrorRef.current && count === 0) {
       const codeMirrorInstance = CodeMirror(codeMirrorRef.current, {
         lineNumbers: false,
         lineWrapping: true,
