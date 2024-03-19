@@ -1,19 +1,20 @@
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const mongodb = require('mongodb');
+import express from "express";
+import * as path from "path";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import bodyParser from "body-parser";
+import cors from 'cors'
+import mongodb from 'mongodb';
 const { MongoClient, ObjectId } = mongodb;
 
 
 const app = express();
-const PORT = process.env.PORT || 8081;
+const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json())
 
-// Use __dirname and __filename to get the current directory and file path
-__dirname = path.dirname(require.main.filename);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static(path.join(__dirname, '..', "/my-ai-app")));
 
@@ -81,7 +82,7 @@ app.post('/submission', jsonParser, async(req, res) => {
 })
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient("mongodb://localhost:27017/gptwriting");
+const client = new MongoClient("mongodb://localhost:27017/test");
 let db;
 let users;
 
@@ -89,27 +90,24 @@ async function run() {
     try {
         // Connect the client to the server
         await client.connect();
-        console.log("Connected to MongoDB");
+        // Send a ping to confirm a successful connection
+        await client.db("test").command({ ping: 1 });
+        console.log(
+            "Pinged your deployment. You successfully connected to MongoDB!"
+        );
 
         // Send a ping to confirm a successful connection
-        await client.db("gptwriting").command({ ping: 1 });
-        console.log("Pinged MongoDB. You successfully connected!");
-
-        // Get the database and users collection
-        const db = client.db("gptwriting");
-        const users = db.collection("users");
-
-        // Check if the users collection exists
-        if (!(await users)) {
-            // Create the users collection if it does not exist
-            await db.createCollection("users");
-            console.log("Users collection does not exist, so created");
+        db = await client.db("test");
+        users = db.collection("users");
+        if (users == null) {
+            users = db.createCollection("users");
+            console.log("Users collection does not exist so created");
         }
-    } catch (err) {
-        console.error("Error connecting to MongoDB:", err);
+    } finally {
+        // Ensures that the client will close when you finish/error
+        //await client.close();
     }
 }
-
 run().catch(console.dir);
 
 app.listen(PORT, () => {
