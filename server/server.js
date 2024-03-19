@@ -1,10 +1,8 @@
-import express from "express";
-import * as path from "path";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import bodyParser from "body-parser";
-import cors from 'cors'
-import mongodb from 'mongodb';
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const mongodb = require('mongodb');
 const { MongoClient, ObjectId } = mongodb;
 
 
@@ -14,7 +12,8 @@ const PORT = process.env.PORT || 8081;
 app.use(cors());
 app.use(express.json())
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+// Use __dirname and __filename to get the current directory and file path
+__dirname = path.dirname(require.main.filename);
 
 app.use(express.static(path.join(__dirname, '..', "/my-ai-app")));
 
@@ -101,7 +100,7 @@ async function run() {
         const users = db.collection("users");
 
         // Check if the users collection exists
-        if (!(await users.exists())) {
+        if (!(await users)) {
             // Create the users collection if it does not exist
             await db.createCollection("users");
             console.log("Users collection does not exist, so created");
