@@ -11,7 +11,13 @@ const { MongoClient, ObjectId } = mongodb;
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use(cors());
+const corsOptions = {
+	origin: 'http://gptwriting.cs.vt.edu:3000',
+	methods: 'POST',
+	credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(express.json())
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -24,6 +30,7 @@ var jsonParser = bodyParser.json();
 app.use(jsonParser); // Parse JSON bodies
 
 app.post('/save_id', jsonParser, async(req, res) => {
+	console.log('recieved');
     try {
         const email = req.body.email;
 
@@ -82,7 +89,7 @@ app.post('/submission', jsonParser, async(req, res) => {
 })
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient("mongodb://localhost:27017/test");
+const client = new MongoClient("mongodb://127.0.0.1:27017/gptwriting?directConnection=true");
 let db;
 let users;
 
@@ -91,13 +98,13 @@ async function run() {
         // Connect the client to the server
         await client.connect();
         // Send a ping to confirm a successful connection
-        await client.db("test").command({ ping: 1 });
+        await client.db("gptwriting").command({ ping: 1 });
         console.log(
             "Pinged your deployment. You successfully connected to MongoDB!"
         );
 
         // Send a ping to confirm a successful connection
-        db = await client.db("test");
+        db = await client.db("gptwriting");
         users = db.collection("users");
         if (users == null) {
             users = db.createCollection("users");

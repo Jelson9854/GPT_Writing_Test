@@ -262,7 +262,7 @@ async function sendToDB(user_email, mess, recording, id, type) {
   if (type == 0) {
     try {
       // Make an asynchronous request to the server
-      const response = await axios.post("http://localhost:8080/save_id", {
+      const response = await axios.post("http://gptwriting.cs.vt.edu:8080/save_id", {
         email: user_email,
         messages: mess,
         rec_thingy: recording,
