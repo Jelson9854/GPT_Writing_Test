@@ -11,13 +11,13 @@ const { MongoClient, ObjectId } = mongodb;
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-const corsOptions = {
-	origin: 'http://gptwriting.cs.vt.edu:3000',
-	methods: 'POST',
-	credentials: true
-};
+// const corsOptions = {
+// 	origin: 'http://gptwriting.cs.vt.edu:3000',
+// 	methods: 'POST',
+// 	credentials: true
+// };
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json())
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -29,69 +29,135 @@ var jsonParser = bodyParser.json();
 // Use body-parser middleware
 app.use(jsonParser); // Parse JSON bodies
 
-app.post('/save_id', jsonParser, async(req, res) => {
-	console.log('recieved');
+// app.post('/save_id', jsonParser, async(req, res) => {
+// 	console.log('recieved');
+//     try {
+//         const email = req.body.email;
+
+//         insertEmailRow(
+//             {
+//                 user_email: email,
+//                 gpt_mess: [],
+//                 writing_thing: [],
+//                 final_text: [],
+//             },
+//             function (data) {
+//                 writeOKResponse(
+//                     res,
+//                     "user email save successfully(" + data.id +")",
+//                     {_id: data._id}
+//                 )
+//             }
+//         )
+//     }
+//     catch (e) {
+//         console.error(e)
+//         res.status(500). json({error: "Internal Error"})
+//     }
+// })
+
+// app.post('/submission', jsonParser, async(req, res) => {
+//     try {
+//         const email = req.body.email;
+//         const mess = req.body.messages;
+//         const writ = req.body.rec_thingy;
+//         const user_id = req.body.__id;
+//         const finText = req.body.final_text;
+
+//         console.log(finText)
+
+//         updateEmailRow(
+//             {_id: new ObjectId(user_id)},
+//             {
+//                 user_email: email,
+//                 gpt_mess: mess,
+//                 writing_thing: writ,
+//                 final_text: finText,
+//             },
+//             function(err){
+//                 if(err) {
+//                     writeBadRequestResponse(
+//                         res,
+//                         "error occured" + err
+//                     );
+//                     return;
+//                 }
+//                 writeOKResponse(res, "saved successfully");
+//             }
+//         )
+//     }
+//     catch (e) {
+//         console.error(e)
+//         res.status(500). json({error: "Internal Error"})
+//     }
+// })
+
+app.post('/save_email', jsonParser, async(req, res) => {
     try {
-        const email = req.body.email;
+        const { user_id, email } = req.body;
+        // Assume user_id is already an ObjectId
+        // Create a new document in the messages collection
+        await messages.insertOne({
+            _id: user_id,
+            email,
+            messages: [],
+        });
 
-        insertEmailRow(
-            {
-                user_email: email,
-                gpt_mess: [],
-                writing_thing: [],
-            },
-            function (data) {
-                writeOKResponse(
-                    res,
-                    "user email save successfully(" + data.id +")",
-                    {_id: data._id}
-                )
-            }
-        )
-    }
-    catch (e) {
-        console.error(e)
-        res.status(500). json({error: "Internal Error"})
-    }
-})
+        // Create a new document in the recording collection
+        await recording.insertOne({
+            _id: user_id,
+            email,
+            recording: [],
+            final_text: [],
+        });
 
-app.post('/submission', jsonParser, async(req, res) => {
-    console.log(req.body)
+        res.status(200).json({ success: true });
+        console.log("emails added")
+    } catch (error) {
+        console.error("Error saving email:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+
+app.post('/save_messages', jsonParser, async(req, res) => {
     try {
-        const email = req.body.email;
-        const mess = req.body.messages;
-        const writ = req.body.rec_thingy;
-        const user_id = req.body.__id;
+        const { user_id, email, mess_array } = req.body;
+        // Assume user_id is already an ObjectId
+        await messages.updateOne(
+            { _id: user_id },
+            { $set: { email: email, messages: mess_array } }
+        );
+        res.status(200).json({ success: true });
+        console.log('saved messages')
+    } catch (error) {
+        console.error("Error saving messages:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
-        updateEmailRow(
-            {_id: new ObjectId(user_id)},
-            {
-                user_email: email,
-                gpt_mess: mess,
-                writing_thing: writ,
-            },
-            function(err){
-                if(err) {
-                    writeBadRequestResponse(
-                        res,
-                        "error occured" + err
-                    );
-                    return;
-                }
-                writeOKResponse(res, "saved successfully");
-            }
-        )
+app.post('/save_recording', jsonParser, async(req, res) => {
+    try {
+        const { user_id, email, rec_thingy, final_text } = req.body;
+        // Assume user_id is already an ObjectId
+        await recording.updateOne(
+            { _id: user_id },
+            { $set: { email, recording: rec_thingy, final_text } }
+        );
+        res.status(200).json({ success: true });
+        console.log('saved recording')
+    } catch (error) {
+        console.error("Error saving recording and final text:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
-    catch (e) {
-        console.error(e)
-        res.status(500). json({error: "Internal Error"})
-    }
-})
+});
+
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient("mongodb://127.0.0.1:27017/gptwriting?directConnection=true");
 let db;
-let users;
+let recording;
+let messages;
 
 async function run() {
     try {
@@ -105,10 +171,15 @@ async function run() {
 
         // Send a ping to confirm a successful connection
         db = await client.db("gptwriting");
-        users = db.collection("users");
-        if (users == null) {
-            users = db.createCollection("users");
-            console.log("Users collection does not exist so created");
+        messages = db.collection('messages');
+        recording = db.collection('recording');
+        if (messages == null) {
+            messages = db.createCollection("messages");
+            console.log("Messages collection does not exist so created");
+        }
+        if (recording == null) {
+            recording = db.createCollection("recording");
+            console.log("Recording collection does not exist so created");
         }
     } finally {
         // Ensures that the client will close when you finish/error
@@ -120,53 +191,3 @@ run().catch(console.dir);
 app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`)
 })
-
-let insertEmailRow = async function (data, callback) {
-    const result = await users.insertOne(data);
-    console.log(
-        "InsertDBRow: Inserted a document into the user collection: " +
-            data._id
-    );
-    if (callback) callback(data);
-};
-
-
-let updateEmailRow = async function (query, newvalues, callback) {
-    console.log("updateDBRow: query: " + JSON.stringify(query));
-    console.log("updateDBRow: newValue: " + JSON.stringify(newvalues));
-
-    try {
-        // Assuming query._id is a string, convert it to an ObjectID
-        if (query._id && typeof query._id === 'string') {
-            query._id = new ObjectID(query._id);
-        }
-
-        const result = await users.updateOne(query, {
-            $set: newvalues,
-        });
-
-        console.log("updateDBRow: Updated a document in users");
-        if (callback) callback();
-    } catch (error) {
-        console.error("Error updating tweet:", error);
-        if (callback) callback(error);
-    }
-};
-
-
-//https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-let writeOKResponse = function (res, message, data) {
-    let obj = {
-        status: "OK",
-        message: message,
-        data: data,
-    };
-    console.log("writeOKResponse: " + message);
-
-    res.status(200).json(obj);
-};
-
-let writeBadRequestResponse = function (res, message) {
-    console.log("writeBadRequestResponse: " + message);
-    res.status(400).send(message);
-};
