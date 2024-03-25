@@ -25,6 +25,7 @@ export default function Webpage() {
   const [user_email, setUserEmail] = useState("");
   const [show, setShow] = useState(true);
   const [text, setText] = useState("");
+  const [copiedTexts, setCopiedTexts] = useState<string[]>([]);
 
   const handleClose = () => {
       setShow(false);
@@ -37,6 +38,22 @@ export default function Webpage() {
     setShow(false) // Close the modal here
     sendEmail(user_email,ID);
   };
+
+  useEffect(() => {
+    const handleCopy = (e: ClipboardEvent) => {
+      const text = window.getSelection()?.toString();
+      if (text) {
+        const timestamp = new Date().toISOString();
+        setCopiedTexts((prevTexts) => [...prevTexts, `${timestamp}: ${text}`]);
+      }
+    };
+
+    document.addEventListener("copy", handleCopy);
+
+    return () => {
+      document.removeEventListener("copy", handleCopy);
+    };
+  }, []);
   
 
   useEffect(() => {
@@ -170,7 +187,7 @@ export default function Webpage() {
               <main className="editors">
                 <MyCodeMirrorComponent
                   sendToDB={(recordingData, fintext) =>
-                    sendToDB(user_email, messages, recordingData, fintext, ID)
+                    sendToDB(user_email, messages, recordingData, fintext, copiedTexts, ID)
                   }
                   updateRecordingData={setRecordingData}
                   updateFinalText={setText}
@@ -232,14 +249,14 @@ export default function Webpage() {
   );
 }
 
-async function sendToDB(user_email, mess, recording, text, objectId) {
+async function sendToDB(user_email, mess, recording, text, copies, objectId) {
   try {
-    console.log(mess, recording, text)
     // Make the first asynchronous request to save messages
     const messageResponse = await axios.post("http://localhost:8080/save_messages", {
       user_id: objectId,
       email: user_email,
       mess_array: mess,
+      copy_array: copies,
     });
     console.log("Message saved:", messageResponse.data);
 
