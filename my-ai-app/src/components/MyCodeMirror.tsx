@@ -12,8 +12,9 @@ import "codemirror/theme/material.css"; // Example theme
 import { CodeRecord } from "codemirror-record"; // Ensure this is the correct import
 
 interface MyCodeMirrorComponentProps {
-  sendToDB: (recording: any) => Promise<any>;
+  sendToDB: (recording: any, fintext: any) => Promise<any>;
   updateRecordingData: (data: any) => void;
+  updateFinalText: (data: any) => void;
 }
 
 interface CodeRecordInstance {
@@ -23,33 +24,73 @@ interface CodeRecordInstance {
 
 const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
   (props, ref) => {
-    const codeMirrorRef = useRef(null);
+    const codeMirrorRef = useRef<HTMLDivElement>(null);
     const codeRecorderRef = useRef<CodeRecordInstance | null>(null);
-    const [count, setCount] = useState(0);
+    const codeMirrorInstanceRef = useRef<CodeMirror.Editor | null>(null);
+    let count = 0;
 
     useEffect(() => {
-      if (
-        typeof window !== "undefined" &&
-        codeMirrorRef.current &&
-        count === 0
-      ) {
+      if (typeof window !== "undefined" && codeMirrorRef.current && count == 0) {
         const codeMirrorInstance = CodeMirror(codeMirrorRef.current, {
           lineNumbers: false,
           lineWrapping: true,
-          // spellcheck: true,
           theme: "material",
         });
 
-        setCount(1);
+        count = count + 1;
 
-        // Initialize codemirror-record with the CodeMirror instance
+        codeMirrorInstanceRef.current = codeMirrorInstance;
+
         const codeRecorder = new CodeRecord(codeMirrorInstance);
-        codeRecorder.listen(); // Start listening for changes
+        codeRecorder.listen();
 
-        // Store the codeRecorder instance in a ref for later use
         codeRecorderRef.current = codeRecorder;
       }
-    }, []); // Empty dependency array means this effect runs once on mount
+    }, []);
+
+    const handleSubmission = useCallback(() => {
+      const isConfirmed = window.confirm("Are you sure you want to submit?");
+      if (isConfirmed && codeRecorderRef.current) {
+        // Retrieve the final text
+        const lines = codeMirrorInstanceRef.current?.getValue().split('\n');
+        const finText = lines;
+
+        // Retrieve the recording data
+        const recordsString = codeRecorderRef.current.getRecords();
+        let recordsArray;
+        try {
+          recordsArray = JSON.parse(recordsString);
+        } catch (error) {
+          console.error("Error parsing records:", error);
+          return; // Exit the function if parsing fails
+        }
+
+        if (recordsArray && recordsArray.length > 0) {
+          console.log("operations added");
+          console.log(recordsArray);
+
+          // Update recordingData in the parent component
+          props.updateRecordingData(recordsArray); // Use the parsed array
+
+          props.updateFinalText(finText);
+
+          // Attempt to send data to the server with error handling
+          props
+            .sendToDB(recordsArray, finText)
+            .then((response) => {
+              console.log("Data sent successfully:", response);
+              alert("Thank you for your submission");
+            })
+            .catch((error) => {
+              console.error("Error sending data:", error);
+            });
+        } else {
+          console.log("no operation to be added");
+        }
+
+        console.log('final text array:', finText)
+      }
+    }, [props]);
 
     useImperativeHandle(ref, () => ({
       getRecords: () => {
@@ -59,49 +100,6 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
         return "";
       },
     }));
-
-    const handleSubmission = useCallback(() => {
-      const isConfirmed = window.confirm("Are you sure you want to submit?");
-
-      // Check if the user clicked "OK"
-      if (isConfirmed) {
-        if (codeRecorderRef.current) {
-          const recordsString = codeRecorderRef.current.getRecords();
-          console.log(recordsString); // This should log the string representation of the array
-
-          // Attempt to parse the string into an array
-          let recordsArray;
-          try {
-            recordsArray = JSON.parse(recordsString);
-            console.log(recordsArray); // This should log the array
-          } catch (error) {
-            console.error("Error parsing records:", error);
-            return; // Exit the function if parsing fails
-          }
-
-          if (recordsArray && recordsArray.length > 0) {
-            console.log("operations added");
-            console.log(recordsArray);
-
-            // Update recordingData in the parent component
-            props.updateRecordingData(recordsArray); // Use the parsed array
-
-            // Attempt to send data to the server with error handling
-            props
-              .sendToDB(recordsArray)
-              .then((response) => {
-                console.log("Data sent successfully:", response);
-                alert("Thank you for your submission");
-              })
-              .catch((error) => {
-                console.error("Error sending data:", error);
-              });
-          } else {
-            console.log("no operation to be added");
-          }
-        }
-      }
-    }, [props]); // Add props to the dependency array
 
     return (
       <div>
@@ -119,6 +117,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
     );
   }
 );
+
 
 MyCodeMirrorComponent.displayName = "MyCodeMirrorComponent";
 

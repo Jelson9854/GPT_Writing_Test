@@ -15,30 +15,29 @@ import {
 import MyCodeMirrorComponent from "../components/MyCodeMirror";
 import { useChat } from "ai/react";
 import Image from "next/image";
+import { v4 as uuidv4 } from 'uuid';
+
 
 export default function Webpage() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   const [recordingData, setRecordingData] = useState([]);
-  const [ID, setID] = useState("");
+  const ID = useState(() => uuidv4())[0]; // Initialize ID using an initializer function
   const [user_email, setUserEmail] = useState("");
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    if (show === false) {
-      setShow(true);
-    }
-  }, [show]);
+  const [show, setShow] = useState(true);
+  const [text, setText] = useState("");
 
   const handleClose = () => {
-    setShow(false);
+      setShow(false);
   };
-
-  const onFormSubmit = (e) => {
+  
+  const onFormSubmit = async (e) => {
     e.preventDefault();
     const em = e.target[0].value;
     setUserEmail(em);
-    sendDataToServer(0);
-    handleClose();
+    setShow(false) // Close the modal here
+    sendEmail(user_email,ID);
   };
+  
 
   useEffect(() => {
     window.addEventListener("beforeunload", function (e) {
@@ -58,28 +57,6 @@ export default function Webpage() {
   useEffect(() => {
     console.log("ID state changed:", ID);
   }, [ID]);
-
-  const sendDataToServer = async (type) => {
-    if (type === 1) {
-    }
-    try {
-      console.log("sending to server");
-      let thingy = await sendToDB(
-        user_email,
-        messages,
-        recordingData,
-        ID,
-        type
-      );
-      console.log(thingy);
-      if (type === 0 && thingy) {
-        setID(thingy);
-        console.log("ID updated:", ID); // This might not log the updated ID immediately due to state update batching
-      }
-    } catch (error) {
-      console.error("Error sending data:", error);
-    }
-  };
 
   return (
     <>
@@ -192,15 +169,12 @@ export default function Webpage() {
               </div>
               <main className="editors">
                 <MyCodeMirrorComponent
-                  sendToDB={(recordingData) =>
-                    sendToDB(user_email, messages, recordingData, ID, 1)
+                  sendToDB={(recordingData, fintext) =>
+                    sendToDB(user_email, messages, recordingData, fintext, ID)
                   }
                   updateRecordingData={setRecordingData}
+                  updateFinalText={setText}
                 />
-                {/* <textarea
-                    id="editor-record"
-                    defaultValue="Please write your response to the essay question here. When finished, click Recorder: Get records then Player: Add operations."
-                  ></textarea> */}
               </main>
             </Tab>
             <Tab eventKey={"gpt"} title="ChatGPT">
@@ -217,7 +191,7 @@ export default function Webpage() {
                       }
                     >
                       <div className="chat-icon">
-                        <Image
+                        <Image  width={40} height={40}
                           src={
                             m.role === "user"
                               ? "/images/user-icon.png"
@@ -258,38 +232,45 @@ export default function Webpage() {
   );
 }
 
-async function sendToDB(user_email, mess, recording, id, type) {
-  if (type == 0) {
-    try {
-      // Make an asynchronous request to the server
-      const response = await axios.post("http://gptwriting.cs.vt.edu:8080/save_id", {
-        email: user_email,
-        messages: mess,
-        rec_thingy: recording,
-      });
-      console.log(response.data);
+async function sendToDB(user_email, mess, recording, text, objectId) {
+  try {
+    console.log(mess, recording, text)
+    // Make the first asynchronous request to save messages
+    const messageResponse = await axios.post("http://localhost:8080/save_messages", {
+      user_id: objectId,
+      email: user_email,
+      mess_array: mess,
+    });
+    console.log("Message saved:", messageResponse.data);
 
-      id = response.data.data._id;
-      // Extract the tweetID from the response
-      return id;
-    } catch (error) {
-      console.error("Error saving email:", error);
-      throw error; // Propagate the error further if needed
-    }
-  } else {
-    try {
-      // Make an asynchronous request to the server
-      const response = await axios.post("http://localhost:8080/submission", {
-        __id: id,
-        email: user_email,
-        messages: mess,
-        rec_thingy: recording,
-      });
-      console.log(response.data);
-      console.log(mess);
-    } catch (error) {
-      console.error("Error saving to database:", error);
-      throw error; // Propagate the error further if needed
-    }
+    // Make the second asynchronous request to save recording and text
+    const recordingResponse = await axios.post("http://localhost:8080/save_recording", {
+      user_id: objectId,
+      email: user_email,
+      rec_thingy: recording,
+      final_text: text,
+    });
+    console.log("Recording and final text saved:", recordingResponse.data);
+
+    // Return whatever information is needed
+    return { messageResponse, recordingResponse };
+  } catch (error) {
+    console.error("Error saving data:", error);
+    throw error; // Propagate the error further if needed
+  }
+}
+
+async function sendEmail(user_email, objectId)
+{
+  try {
+    const emailResponse = await axios.post("http://localhost:8080/save_email", {
+      user_id: objectId,
+      email: user_email,
+    });
+    console.log("Email saved to databases: ", emailResponse.data)
+  } catch(error)
+  {
+    console.error("Error saving data: ", error);
+    throw error;
   }
 }
