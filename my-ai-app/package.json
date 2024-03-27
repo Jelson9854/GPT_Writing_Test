@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -11,6 +12,7 @@
   "dependencies": {
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
+    "@types/uuid": "^9.0.8",
     "ai": "^2.2.37",
     "axios": "^1.6.7",
     "babel-loader": "^8.2.2",
