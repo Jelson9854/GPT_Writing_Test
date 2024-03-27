@@ -252,7 +252,7 @@ export default function Webpage() {
 async function sendToDB(user_email, mess, recording, text, copies, objectId) {
   try {
     // Make the first asynchronous request to save messages
-    const messageResponse = await axios.post("http://localhost:8080/save_messages", {
+    const messageResponse = await axios.post("http://gptwriting.cs.vt.edu:8080/save_messages", {
       user_id: objectId,
       email: user_email,
       mess_array: mess,
@@ -261,7 +261,7 @@ async function sendToDB(user_email, mess, recording, text, copies, objectId) {
     console.log("Message saved:", messageResponse.data);
 
     // Make the second asynchronous request to save recording and text
-    const recordingResponse = await axios.post("http://localhost:8080/save_recording", {
+    const recordingResponse = await axios.post("http://gptwriting.cs.vt.edu:8080/save_recording", {
       user_id: objectId,
       email: user_email,
       rec_thingy: recording,
@@ -280,7 +280,7 @@ async function sendToDB(user_email, mess, recording, text, copies, objectId) {
 async function sendEmail(user_email, objectId)
 {
   try {
-    const emailResponse = await axios.post("http://localhost:8080/save_email", {
+    const emailResponse = await axios.post("http://gptwriting.cs.vt.edu:8080/save_email", {
       user_id: objectId,
       email: user_email,
     });

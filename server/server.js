@@ -11,11 +11,11 @@ const { MongoClient, ObjectId } = mongodb;
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// const corsOptions = {
-// 	origin: 'http://gptwriting.cs.vt.edu:3000',
-// 	methods: 'POST',
-// 	credentials: true
-// };
+ const corsOptions = {
+ 	origin: 'http://gptwriting.cs.vt.edu:3000',
+ 	methods: 'POST',
+ 	credentials: true
+ };
 
 app.use(cors());
 app.use(express.json())
