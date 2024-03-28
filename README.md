@@ -7,7 +7,7 @@ Each folder will need to be run for the project to be successful
 Initialize the environment and install dependencies
 
 ```bash
-npm i
+pnpm i
 ```
 
 You can use yarn or pnpm if desired (I don't recall the syntax)
@@ -15,7 +15,7 @@ You can use yarn or pnpm if desired (I don't recall the syntax)
 After initializing run the following command to start the environment
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result
