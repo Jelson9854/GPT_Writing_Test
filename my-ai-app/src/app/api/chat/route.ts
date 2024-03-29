@@ -17,9 +17,7 @@ export async function POST(req: Request) {
     stream: true,
     messages,
   });
-
-  console.log(response)
- 
+  
   // Convert the response into a friendly text-stream
   const stream = OpenAIStream(response);
   // Respond with the stream

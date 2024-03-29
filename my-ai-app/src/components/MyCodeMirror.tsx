@@ -4,12 +4,12 @@ import React, {
   useCallback,
   useImperativeHandle,
   forwardRef,
-  useState,
 } from "react";
-import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css"; // Example theme
+import "codemirror/theme/material-darker.css"; // Example theme
+import CodeMirror from "codemirror";
 import { CodeRecord } from "codemirror-record"; // Ensure this is the correct import
+import 'codemirror-spell-checker';
 
 interface MyCodeMirrorComponentProps {
   sendToDB: (recording: any, fintext: any) => Promise<any>;
@@ -27,23 +27,24 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
     const codeMirrorRef = useRef<HTMLDivElement>(null);
     const codeRecorderRef = useRef<CodeRecordInstance | null>(null);
     const codeMirrorInstanceRef = useRef<CodeMirror.Editor | null>(null);
-    let count = 0;
+    const countRef = useRef<number>(0);
 
     useEffect(() => {
-      if (typeof window !== "undefined" && codeMirrorRef.current && count == 0) {
+      if (typeof window !== "undefined" && codeMirrorRef.current && countRef.current === 0) {
         const codeMirrorInstance = CodeMirror(codeMirrorRef.current, {
           lineNumbers: false,
           lineWrapping: true,
-          theme: "material",
+          theme: "material-darker",
+          spellcheck: true,
         });
-
-        count = count + 1;
-
+    
+        countRef.current += 1;
+    
         codeMirrorInstanceRef.current = codeMirrorInstance;
-
+    
         const codeRecorder = new CodeRecord(codeMirrorInstance);
         codeRecorder.listen();
-
+    
         codeRecorderRef.current = codeRecorder;
       }
     }, []);
@@ -52,7 +53,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
       const isConfirmed = window.confirm("Are you sure you want to submit?");
       if (isConfirmed && codeRecorderRef.current) {
         // Retrieve the final text
-        const lines = codeMirrorInstanceRef.current?.getValue().split('\n');
+        const lines = codeMirrorInstanceRef.current?.getValue().split("\n");
         const finText = lines;
 
         // Retrieve the recording data
@@ -88,7 +89,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
           console.log("no operation to be added");
         }
 
-        console.log('final text array:', finText)
+        console.log("final text array:", finText);
       }
     }, [props]);
 
@@ -117,7 +118,6 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
     );
   }
 );
-
 
 MyCodeMirrorComponent.displayName = "MyCodeMirrorComponent";
 

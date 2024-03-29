@@ -59,9 +59,18 @@ importers:
       http-server:
         specifier: ^14.1.1
         version: 14.1.1
+      my-ai-app:
+        specifier: workspace:^
+        version: 'link:'
       next:
         specifier: 14.1.0
         version: 14.1.0(@babel/core@7.24.0)(react-dom@18.2.0)(react@18.2.0)
+      next-compose-plugins:
+        specifier: ^2.2.1
+        version: 2.2.1
+      next-transpile-modules:
+        specifier: ^10.0.1
+        version: 10.0.1
       ngrok:
         specifier: ^5.0.0-beta.2
         version: 5.0.0-beta.2
@@ -77,6 +86,9 @@ importers:
       react-dom:
         specifier: ^18
         version: 18.2.0(react@18.2.0)
+      typo-js:
+        specifier: ^1.2.4
+        version: 1.2.4
       util:
         specifier: ^0.12.5
         version: 0.12.5
@@ -4525,6 +4537,16 @@ packages:
 
   /neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
+    dev: false
+
+  /next-compose-plugins@2.2.1:
+    resolution: {integrity: sha512-OjJ+fV15FXO2uQXQagLD4C0abYErBjyjE0I0FHpOEIB8upw0hg1ldFP6cqHTJBH1cZqy96OeR3u1dJ+Ez2D4Bg==}
+    dev: false
+
+  /next-transpile-modules@10.0.1:
+    resolution: {integrity: sha512-4VX/LCMofxIYAVV58UmD+kr8jQflpLWvas/BQ4Co0qWLWzVh06FoZkECkrX5eEZT6oJFqie6+kfbTA3EZCVtdQ==}
+    dependencies:
+      enhanced-resolve: 5.16.0
     dev: false
 
   /next@14.1.0(@babel/core@7.24.0)(react-dom@18.2.0)(react@18.2.0):

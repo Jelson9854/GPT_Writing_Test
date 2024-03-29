@@ -34,9 +34,18 @@ export default function Webpage() {
   const onFormSubmit = async (e) => {
     e.preventDefault();
     const em = e.target[0].value;
+  
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+    if (!emailRegex.test(em)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+  
     setUserEmail(em);
-    setShow(false) // Close the modal here
-    sendEmail(user_email,ID);
+    setShow(false); // Close the modal here
+    sendEmail(user_email, ID);
   };
 
   useEffect(() => {
@@ -78,7 +87,7 @@ export default function Webpage() {
   return (
     <>
       <Container>
-        <Modal show={show} onHide={handleClose} backdrop="static">
+        <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
           <Modal.Header>
             <Modal.Title className="modal-header">Enter Your Email</Modal.Title>
           </Modal.Header>
