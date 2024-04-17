@@ -123,11 +123,12 @@ export default function Webpage() {
             </Form>
           </Modal.Body>
         </Modal>
-        <Row className="justify-content">
-          <Tabs justify variant="tabs" defaultActiveKey={"prompt"}>
+        <Row className="justify-content pr-0">
+          <Tabs justify variant="tabs" defaultActiveKey={"prompt"} className="pr-0">
             <Tab eventKey="prompt" title="Writing" className="content">
               <div className="margins"></div>
-              <div className="question">
+              <div className="flex justify-between gap-4">
+              <div className="question flex flex-col gap-6">
                 <p>
                   The test describes an issue and provides three different
                   perspectives on the issue. You are asked to read and consider
@@ -137,9 +138,9 @@ export default function Webpage() {
                   will not be affected by the perspective you take on the issue.
                 </p>
                 <p>
-                  <b>Intelligent Machines</b>
+                  <h2><b>Intelligent Machines</b></h2>
                 </p>
-                <p className="txt-center">
+                <p className="">
                   Many of the goods and services we depend on daily are now
                   supplied by intelligent, automated machines rather than human
                   beings. Robots build cars and other goods on assembly lines,
@@ -153,47 +154,40 @@ export default function Webpage() {
                   the implications and meaning of their presence in our lives.
                 </p>
                 <p></p>
-                <div className="table-scroll">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <th>Perspective One</th>
-                        <th>Perspective Two</th>
-                        <th>Perspective Three</th>
-                      </tr>
-                      <tr>
-                        <td>
-                          <span className="body-text-small-dark">
-                            What we lose with the replacement of people by
-                            machines is some part of our own humanity. Even our
-                            mundane daily encounters no longer require from us
-                            basic courtesy, respect, and tolerance for other
-                            people.
-                          </span>
-                        </td>
-                        <td>
-                          <span className="body-text-small-dark">
-                            Machines are good at low-skill, repetitive jobs, and
-                            at high-speed, extremely precise jobs. In both cases
-                            they work better than humans. This efficiency leads
-                            to a more prosperous and progressive world for
-                            everyone.
-                          </span>
-                        </td>
-                        <td>
-                          <span className="body-text-small-dark">
-                            Intelligent machines challenge our long-standing
-                            ideas about what humans are or can be. This is good
-                            because it pushes both humans and machines toward
-                            new, unimagined possibilities.
-                          </span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div className="flex flex-col">
+                  <div className="mb-3">
+                    <h3 className="font-bold">Perspective One </h3>
+                    <span className="body-text-small-dark">
+                      What we lose with the replacement of people by
+                      machines is some part of our own humanity. Even our
+                      mundane daily encounters no longer require from us
+                      basic courtesy, respect, and tolerance for other
+                      people.
+                    </span>
+                  </div>
+                  <div className="my-3">
+                    <h3 className="font-bold">Perspective Two</h3>
+                  <span className="body-text-small-dark">
+                      Machines are good at low-skill, repetitive jobs, and
+                      at high-speed, extremely precise jobs. In both cases
+                      they work better than humans. This efficiency leads
+                      to a more prosperous and progressive world for
+                      everyone.
+                    </span>
+                  </div>                       
+                  <div className="mt-3">
+                    <h3 className="font-bold">Perspective Three</h3>
+                  <span className="body-text-small-dark">
+                      Intelligent machines challenge our long-standing
+                      ideas about what humans are or can be. This is good
+                      because it pushes both humans and machines toward
+                      new, unimagined possibilities.
+                    </span>
+                  </div>
                 </div>
+
               </div>
-              <main className="editors">
+              <div className="editors">
                 <MyCodeMirrorComponent
                   sendToDB={(recordingData, fintext) =>
                     sendToDB(user_email, messages, recordingData, fintext, copiedTexts, ID)
@@ -201,7 +195,8 @@ export default function Webpage() {
                   updateRecordingData={setRecordingData}
                   updateFinalText={setText}
                 />
-              </main>
+              </div>
+              </div>
             </Tab>
             <Tab eventKey={"gpt"} title="ChatGPT">
               <div className="margins"></div>

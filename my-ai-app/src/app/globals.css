@@ -123,15 +123,6 @@ a {
   padding-left: 50px;
   color: #ffffff;
 }
-
-#chat-area {
-  align-self: flex-end;
-  margin: 0 auto;
-  overflow: scroll;
-  border: 1px solid gray;
-  border-radius: 4px;
-}
-
 .chat-content-area {
   overflow: auto;
   height: 75vh;
@@ -230,11 +221,8 @@ body {
   border: 1px solid #404350;
   border-radius: 5px;
   background: #404350;
-  text-align: center;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
   padding: 10px;
+  width: 40%;
 }
 
 .control-buttons {
@@ -264,37 +252,18 @@ body {
 .control-buttons .speed-set {
   margin-left: 15px;
 }
-.progress-bar {
-  height: 15px;
-  width: 500px;
-  background: #eee;
-  margin-top: 10px;
-  position: relative;
-}
-.progress-bar-slider {
-  width: 1px;
-  height: 15px;
-  background: #f00;
-  position: absolute;
-  pointer-events: none;
-  top: 0;
-  left: 0;
-}
+
 .editors {
   display: flex;
-  width: 100%;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
+  width: 60%;
   margin-top: 10px;
-  height: 62vh;
+  height: 90vh;
 }
 .editors > div {
   border: 1px solid #bdc3c7;
   flex-basis: 400px;
   flex-grow: 1;
   border-radius: 5px;
-  overflow: scroll;
   max-width: 100%;
 }
 .editors > div h3 {
@@ -308,9 +277,9 @@ body {
 #chat-area {
   align-self: flex-end;
   margin: 0 auto;
-  overflow: scroll;
   border: 1px solid gray;
   border-radius: 4px;
+  height: 80vh;
 }
 
 #ask {
@@ -381,7 +350,7 @@ textarea {
 }
 .CodeMirror {
   margin: 10;
-  height: 60vh;
+  height: 84vh !important;
 }
 
 .CodeMirror-wrap pre {
@@ -774,9 +743,6 @@ footer {
   background-color:#353641;
 }
 
-.CodeMirror {
-  height: 50vh !important;
-}
 
 .cm-s-material.CodeMirror {
   height: 56vh !important;
