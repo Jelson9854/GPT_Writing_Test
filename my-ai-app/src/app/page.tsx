@@ -16,6 +16,7 @@ import MyCodeMirrorComponent from "../components/MyCodeMirror";
 import { useChat } from "ai/react";
 import Image from "next/image";
 import { v4 as uuidv4 } from 'uuid';
+import { BsArrowUpSquareFill } from "react-icons/bs";
 
 
 export default function Webpage() {
@@ -232,22 +233,25 @@ export default function Webpage() {
                     </div>
                   ))}
                   <form
-                    className="chat-input-area overflow-hidden"
+                    className="chat-input-area overflow-hidden flex align-content-center"
                     onSubmit={handleSubmit}
                   >
-                    <input
-                      className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl chat-inputs-container"
+                    <textarea
+                      className="bottom-0 w-full max-w-xl p-2 mb-8 border border-gray-300 rounded shadow-xl chat-inputs-container h-15 mr-2"
                       value={input}
                       placeholder="Message ChatGPT..."
                       onChange={handleInputChange}
-                    />
+                    >
+                    </textarea>
+                    <Button type="submit" variant="ghost" className="!bg-transparent p-0 m-0 h-[60px] w-[60px]">
+                      <BsArrowUpSquareFill size={60} />
+                    </Button>
                   </form>
                 </div>
               </div>
             </Tab>
           </Tabs>
         </Row>
-        {/* <Script src="../js/webpage.js" strategy="beforeInteractive"/> */}
       </Container>
     </>
   );
