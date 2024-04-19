@@ -129,14 +129,6 @@ a {
   overflow-x: hidden;
 }
 
-.chat-input-area {
-  bottom: 4vh;
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  width: 100vw !important;
-}
-
 .chat-icon {
   margin: 0;
   padding: 0;
@@ -342,7 +334,6 @@ textarea {
   justify-content: flex-end;
   width: 19%;
   float: right;
-  position: sticky;
   right: 0;
   left: 81%;
   margin-top: -40px;
@@ -503,15 +494,6 @@ textarea {
   height: 0
 }
 
-
-.side-nav {
-  background-color: #1f2123;
-  margin: 0px;
-  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1);
-  overflow: auto;
-  height: 95vh;
-}
-
 #chat-btn {
   border: 1px solid rgb(96, 95, 95);
   height: 40px;
@@ -594,7 +576,6 @@ input[type="range"]::-webkit-slider-thumb {
   background-color: #40414f;
   padding: 5px;
   border-radius: 5px;
-  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1);
   display: flex;
   width: 50vw;
 
@@ -685,7 +666,6 @@ footer {
 
 .chat-input-area {
   bottom: 4vh;
-  position: absolute;
   width: 80vw;
   display: flex;
   justify-content: center;

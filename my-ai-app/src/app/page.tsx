@@ -66,20 +66,27 @@ export default function Webpage() {
   }, []);
   
 
-  useEffect(() => {
-    window.addEventListener("beforeunload", function (e) {
+  // useEffect(() => {
+  //   window.addEventListener("beforeunload", function (e) {
+  //     e.preventDefault();
+  //     e.returnValue = "Do you want to leave the page?";
+  //     setTimeout(function () {
+  //       // Timeout to wait for user response
+  //       setTimeout(function () {
+  //         // Timeout to wait onunload, if not fired then this will be executed
+  //         console.log("User stayed on the page.");
+  //       }, 50);
+  //     }, 50);
+  //     return "Do you want to leave the page?";
+  //   });
+  // });
+
+  const onEnterPress = (e) => {
+    if(e.keyCode == 13 && e.shiftKey == false) {
       e.preventDefault();
-      e.returnValue = "Do you want to leave the page?";
-      setTimeout(function () {
-        // Timeout to wait for user response
-        setTimeout(function () {
-          // Timeout to wait onunload, if not fired then this will be executed
-          console.log("User stayed on the page.");
-        }, 50);
-      }, 50);
-      return "Do you want to leave the page?";
-    });
-  });
+      handleSubmit(e);
+    }
+  }
 
   useEffect(() => {
     console.log("ID state changed:", ID);
@@ -88,7 +95,7 @@ export default function Webpage() {
   return (
     <>
       <Container>
-        <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
+        {/* <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
           <Modal.Header>
             <Modal.Title className="modal-header">Enter Your Email</Modal.Title>
           </Modal.Header>
@@ -123,7 +130,7 @@ export default function Webpage() {
               </Button>
             </Form>
           </Modal.Body>
-        </Modal>
+        </Modal> */}
         <Row className="justify-content pr-0">
           <Tabs justify variant="tabs" defaultActiveKey={"prompt"} className="pr-0">
             <Tab eventKey="prompt" title="Writing" className="content">
@@ -201,15 +208,16 @@ export default function Webpage() {
             </Tab>
             <Tab eventKey={"gpt"} title="ChatGPT">
               <div className="margins"></div>
-              <div className="" id="chat-area">
-                <div className="chat-content-area">
+              <div className="flex flex-col items-center justify-center gap-3">
+              <div className="flex flex-col justify-between border border-gray-400 rounded-md !min-w-full">
+                <div className="edit mb-auto h-[80vh] !min-w-full">
                   {messages.map((m) => (
                     <div
                       key={m.id}
                       className={
                         m.role === "user"
-                          ? "row user-chat-box"
-                          : "row gpt-chat-box"
+                          ? "row w-full py-[20px] pl-[50px] text-white mx-0"
+                          : "row w-full py-[20px] pl-[50px] bg-[#404350] text-white mx-0"
                       }
                     >
                       <div className="chat-icon">
@@ -232,22 +240,24 @@ export default function Webpage() {
                       </div>
                     </div>
                   ))}
-                  <form
-                    className="chat-input-area overflow-hidden flex align-content-center"
+                </div>
+              </div>
+              <form
+                    className="overflow-hidden bg-[#40414f] flex align-content-center items-center justify-center h-26 mt-auto border border-gray-300 rounded-md "
                     onSubmit={handleSubmit}
                   >
                     <textarea
-                      className="bottom-0 w-full max-w-xl p-2 mb-8 border border-gray-300 rounded shadow-xl chat-inputs-container h-15 mr-2"
+                      className="bottom-0 w-full max-w-xl p-2 chat-inputs-container h-15"
                       value={input}
                       placeholder="Message ChatGPT..."
                       onChange={handleInputChange}
+                      onKeyDown={ (e) => onEnterPress(e) }
                     >
                     </textarea>
-                    <Button type="submit" variant="ghost" className="!bg-transparent p-0 m-0 h-[60px] w-[60px]">
-                      <BsArrowUpSquareFill size={60} />
+                    <Button type="submit" variant="ghost" className="!bg-transparent p-0 m-0 h-[40px] w-[40px]">
+                      <BsArrowUpSquareFill size={40} />
                     </Button>
                   </form>
-                </div>
               </div>
             </Tab>
           </Tabs>
