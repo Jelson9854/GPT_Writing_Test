@@ -112,6 +112,12 @@ app.post('/save_email', jsonParser, async(req, res) => {
             final_text: [],
         });
 
+        await users.insertOne({
+            _id: user_id,
+            email,
+            time: new Date().toISOString(),
+        });
+
         res.status(200).json({ success: true });
         console.log("emails added")
     } catch (error) {
@@ -159,6 +165,7 @@ const client = new MongoClient("mongodb://127.0.0.1:27017/gptwriting?directConne
 let db;
 let recording;
 let messages;
+let users;
 
 async function run() {
     try {
@@ -174,6 +181,7 @@ async function run() {
         db = await client.db("gptwriting");
         messages = db.collection('messages');
         recording = db.collection('recording');
+        users = db.collection('users');
         if (messages == null) {
             messages = db.createCollection("messages");
             console.log("Messages collection does not exist so created");
@@ -181,6 +189,10 @@ async function run() {
         if (recording == null) {
             recording = db.createCollection("recording");
             console.log("Recording collection does not exist so created");
+        }
+        if (users == null) {
+            users = db.createCollection("users");
+            console.log("Users collection does not exist so created");
         }
     } finally {
         // Ensures that the client will close when you finish/error
