@@ -209,7 +209,7 @@ export default function Webpage() {
             <Tab eventKey={"gpt"} title="ChatGPT">
               <div className="margins"></div>
               <div className="flex flex-col items-center justify-center gap-3">
-              <div className="flex flex-col justify-between border border-gray-400 rounded-md !min-w-full">
+              <div className="flex flex-col justify-between border border-gray-400 rounded-md !min-w-full overflow-y-scroll overflow-x-hidden">
                 <div className="edit mb-auto h-[80vh] !min-w-full">
                   {messages.map((m) => (
                     <div
