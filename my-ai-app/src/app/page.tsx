@@ -66,20 +66,20 @@ export default function Webpage() {
   }, []);
   
 
-  // useEffect(() => {
-  //   window.addEventListener("beforeunload", function (e) {
-  //     e.preventDefault();
-  //     e.returnValue = "Do you want to leave the page?";
-  //     setTimeout(function () {
-  //       // Timeout to wait for user response
-  //       setTimeout(function () {
-  //         // Timeout to wait onunload, if not fired then this will be executed
-  //         console.log("User stayed on the page.");
-  //       }, 50);
-  //     }, 50);
-  //     return "Do you want to leave the page?";
-  //   });
-  // });
+  useEffect(() => {
+    window.addEventListener("beforeunload", function (e) {
+      e.preventDefault();
+      e.returnValue = "Do you want to leave the page?";
+      setTimeout(function () {
+        // Timeout to wait for user response
+        setTimeout(function () {
+          // Timeout to wait onunload, if not fired then this will be executed
+          console.log("User stayed on the page.");
+        }, 50);
+      }, 50);
+      return "Do you want to leave the page?";
+    });
+  });
 
   const onEnterPress = (e) => {
     if(e.keyCode == 13 && e.shiftKey == false) {
@@ -95,7 +95,7 @@ export default function Webpage() {
   return (
     <>
       <Container>
-        {/* <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
+        <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
           <Modal.Header>
             <Modal.Title className="modal-header">Enter Your Email</Modal.Title>
           </Modal.Header>
@@ -130,7 +130,7 @@ export default function Webpage() {
               </Button>
             </Form>
           </Modal.Body>
-        </Modal> */}
+        </Modal>
         <Row className="justify-content pr-0">
           <Tabs justify variant="tabs" defaultActiveKey={"prompt"} className="pr-0">
             <Tab eventKey="prompt" title="Writing" className="content">
