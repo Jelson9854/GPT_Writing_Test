@@ -18,6 +18,16 @@ import Image from "next/image";
 import { v4 as uuidv4 } from 'uuid';
 import { BsArrowUpSquareFill } from "react-icons/bs";
 
+type CopiedText = {
+  time: string;
+  text: string;
+  tab: string;
+};
+
+type TimerThing = {
+  tab: string;
+  time: number;
+}
 
 export default function Webpage() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
@@ -26,7 +36,13 @@ export default function Webpage() {
   const [user_email, setUserEmail] = useState("");
   const [show, setShow] = useState(true);
   const [text, setText] = useState("");
-  const [copiedTexts, setCopiedTexts] = useState<string[]>([]);
+  const [copiedTexts, setCopiedTexts] = useState<CopiedText[]>([]);
+  const [tab , setTab] = useState('prompt');
+  const [timeElapsed, setTimeElapsed] = useState(0);
+  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
+  const [tempVar, setTempVar] = useState("prompt");
+  const [timerDict, setTimerDict] = useState<TimerThing[]>([]);
+
 
   const handleClose = () => {
       setShow(false);
@@ -47,6 +63,7 @@ export default function Webpage() {
     setUserEmail(em);
     setShow(false); // Close the modal here
     sendEmail(user_email, ID);
+    startTimer();
   };
 
   useEffect(() => {
@@ -54,7 +71,8 @@ export default function Webpage() {
       const text = window.getSelection()?.toString();
       if (text) {
         const timestamp = new Date().toISOString();
-        setCopiedTexts((prevTexts) => [...prevTexts, `${timestamp}: ${text}`]);
+        let item = {'time':timestamp, 'text':text, 'tab':tab};
+        setCopiedTexts((prevTexts) => [...prevTexts, item]);
       }
     };
 
@@ -91,6 +109,79 @@ export default function Webpage() {
   useEffect(() => {
     console.log("ID state changed:", ID);
   }, [ID]);
+
+  const handleTabChange = (t) => {
+    if(t == 'prompt') {
+      setTab('prompt');
+      startTimer();
+    }
+    else if(t == 'gpt') {
+      setTab('gpt');
+      startTimer();
+    }
+    else if(t == 'hidden') {
+      setTab('hidden');
+      startTimer();
+    }
+  }
+
+  useEffect(() => {
+    console.log("Tab state updated to:", tab, "Time elapsed:", timeElapsed);
+    setTimerDict([...timerDict, {tab: tab, time: timeElapsed}]);
+    setTimeElapsed(0);
+  }, [tab]);
+
+
+
+  const startTimer = () => {
+    if (timerInterval) return; // Prevent multiple intervals from being set
+    const interval = setInterval(() => {
+      setTimeElapsed((prevTime) => prevTime + 1);
+    }, 1000);
+    setTimerInterval(interval);
+  };
+
+  const stopTimer = () => {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      setTimerInterval(null);
+    }
+  };
+
+  useEffect(() => {
+    // Clean up the interval on component unmount
+    return () => {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+    };
+  }, [timerInterval]);
+
+  
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        console.log('Tab is now hidden');
+        setTempVar(tab);
+        handleTabChange('hidden');
+        // Add your logic here for when the tab becomes hidden
+      } else if (document.visibilityState === 'visible') {
+        console.log('Tab is now visible');
+        handleTabChange(tempVar);
+        // Add your logic here for when the tab becomes visible
+      }
+    };
+  
+    // Add event listener for visibility change
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+  
+    // Clean up the event listener when the component unmounts
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  });
+  
+
 
   return (
     <>
@@ -132,7 +223,7 @@ export default function Webpage() {
           </Modal.Body>
         </Modal>
         <Row className="justify-content pr-0">
-          <Tabs justify variant="tabs" defaultActiveKey={"prompt"} className="pr-0">
+          <Tabs justify variant="tabs" defaultActiveKey={"prompt"} className="pr-0" onSelect={handleTabChange}>
             <Tab eventKey="prompt" title="Writing" className="content">
               <div className="margins"></div>
               <div className="flex justify-between gap-4">
@@ -198,15 +289,23 @@ export default function Webpage() {
               <div className="editors">
                 <MyCodeMirrorComponent
                   sendToDB={(recordingData, fintext) =>
-                    sendToDB(user_email, messages, recordingData, fintext, copiedTexts, ID)
+                    sendToDB(user_email, messages, recordingData, fintext, copiedTexts, timerDict, ID)
                   }
                   updateRecordingData={setRecordingData}
                   updateFinalText={setText}
                 />
               </div>
+              {/* <Button
+                variant="primary"
+                onClick={() =>
+                  console.log(`Time on Current Tab: ${currentTabTime} seconds, Time on Different Tab: ${differentTabTime} seconds`)
+                }
+              >
+                Log Time
+              </Button> */}
               </div>
             </Tab>
-            <Tab eventKey={"gpt"} title="ChatGPT">
+            <Tab eventKey={"gpt"} title="ChatGPT" onSelect={handleTabChange}>
               <div className="margins"></div>
               <div className="flex flex-col items-center justify-center gap-3">
               <div className="flex flex-col justify-between border border-gray-400 rounded-md !min-w-full overflow-y-scroll overflow-x-hidden">
@@ -267,7 +366,7 @@ export default function Webpage() {
   );
 }
 
-async function sendToDB(user_email, mess, recording, text, copies, objectId) {
+async function sendToDB(user_email, mess, recording, text, copies, timers, objectId) {
   try {
     // Make the first asynchronous request to save messages
     const messageResponse = await axios.post("http://gptwriting.cs.vt.edu:8080/save_messages", {
@@ -275,6 +374,7 @@ async function sendToDB(user_email, mess, recording, text, copies, objectId) {
       email: user_email,
       mess_array: mess,
       copy_array: copies,
+      timer_array: timers,
     });
     console.log("Message saved:", messageResponse.data);
 
