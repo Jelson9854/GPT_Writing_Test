@@ -129,11 +129,11 @@ app.post('/save_email', jsonParser, async(req, res) => {
 
 app.post('/save_messages', jsonParser, async(req, res) => {
     try {
-        const { user_id, email, mess_array, copy_array } = req.body;
+        const { user_id, email, mess_array, copy_array, timer_array } = req.body;
         // Assume user_id is already an ObjectId
         await messages.updateOne(
             { _id: user_id },
-            { $set: { email: email, messages: mess_array, copy_array } }
+            { $set: { email: email, messages: mess_array, copy_array, timer_array } }
         );
         res.status(200).json({ success: true });
         console.log('saved messages')
