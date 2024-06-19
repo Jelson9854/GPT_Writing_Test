@@ -94,7 +94,7 @@ app.use(jsonParser); // Parse JSON bodies
 
 app.post('/save_email', jsonParser, async(req, res) => {
     try {
-        const { user_id, email } = req.body;
+        const { user_id, email, startTime } = req.body;
         // Assume user_id is already an ObjectId
         // Create a new document in the messages collection
         await messages.insertOne({
@@ -102,6 +102,7 @@ app.post('/save_email', jsonParser, async(req, res) => {
             email,
             messages: [],
             copy_array: [],
+            timer_array: [],
         });
 
         // Create a new document in the recording collection
@@ -110,6 +111,7 @@ app.post('/save_email', jsonParser, async(req, res) => {
             email,
             recording: [],
             final_text: [],
+            start: startTime,
         });
 
         await users.insertOne({
