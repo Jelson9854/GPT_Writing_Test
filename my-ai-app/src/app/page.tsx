@@ -17,6 +17,7 @@ import { useChat } from "ai/react";
 import Image from "next/image";
 import { v4 as uuidv4 } from 'uuid';
 import { BsArrowUpSquareFill } from "react-icons/bs";
+import { SyntheticModule } from "vm";
 
 type CopiedText = {
   time: string;
@@ -106,22 +107,24 @@ export default function Webpage() {
   }
 
   const handleTabChange = (t) => {
-    const timestamp = new Date().toISOString();
-    console.log("Tab changed to:", t, "at:", timestamp);
-    setTab(t);
-    setTabLog((prevLogs) => [...prevLogs, { tab: t, time: timestamp }]);
+    // Only update tab state if the tab change is from the navbar
+    if (typeof t == 'string') {
+      const timestamp = new Date().toISOString();
+      console.log("Tab changed to:", t, "at:", timestamp);
+      setTab(t);
+      setTabLog((prevLogs) => [...prevLogs, { tab: t, time: timestamp }]);
+    }
   };
   
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
         console.log('Tab is now hidden');
-        setTempVar(tab);
         handleTabChange('hidden');
         // Add your logic here for when the tab becomes hidden
       } else if (document.visibilityState === 'visible') {
         console.log('Tab is now visible');
-        handleTabChange(tempVar);
+        handleTabChange(tab);
         // Add your logic here for when the tab becomes visible
       }
     };
@@ -182,18 +185,18 @@ export default function Webpage() {
               <div className="margins"></div>
               <div className="flex justify-between gap-4">
               <div className="question flex flex-col gap-6">
-                <p>
+                <span className="body-text-small-dark">
                   The test describes an issue and provides three different
                   perspectives on the issue. You are asked to read and consider
                   the issue and perspectives, state your own perspective on the
                   issue, and analyze the relationship between your perspective
                   and at least one other perspective on the issue. Your score
                   will not be affected by the perspective you take on the issue.
-                </p>
-                <p>
-                  <h2><b>Intelligent Machines</b></h2>
-                </p>
-                <p className="">
+                </span>
+                <span>
+                  <h2 className="font-bold">Intelligent Machines</h2>
+                </span>
+                <span className="body-text-small-dark">
                   Many of the goods and services we depend on daily are now
                   supplied by intelligent, automated machines rather than human
                   beings. Robots build cars and other goods on assembly lines,
@@ -205,7 +208,7 @@ export default function Webpage() {
                   replace humans with machines? Given the accelerating variety
                   and prevalence of intelligent machines, it is worth examining
                   the implications and meaning of their presence in our lives.
-                </p>
+                </span>
                 <p></p>
                 <div className="flex flex-col">
                   <div className="mb-3">
@@ -298,6 +301,7 @@ export default function Webpage() {
               <form
                     className="overflow-hidden bg-[#40414f] flex align-content-center items-center justify-center h-26 mt-auto border border-gray-300 rounded-md "
                     onSubmit={handleSubmit}
+                    onSelect={() => {console.log("Selected")}}
                   >
                     <textarea
                       className="bottom-0 w-full max-w-xl p-2 chat-inputs-container h-15"
