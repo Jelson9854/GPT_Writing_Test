@@ -41,6 +41,16 @@ export default function Webpage() {
   const [tab , setTab] = useState('prompt');
   const [tempVar, setTempVar] = useState("prompt");
   const [tabLog, setTabLog] = useState<TimerThing[]>([]);
+  const [emailQuery, setEmailQuery] = useState<string | null>("");
+
+  useEffect(() => {
+    const queryString = window.location.search;
+    console.log(queryString);
+  
+    const urlParams = new URLSearchParams(queryString);
+    const emailFromURL = urlParams.get('email');
+    setEmailQuery(emailFromURL);
+  }, []);
 
 
   const handleClose = () => {
@@ -58,8 +68,14 @@ export default function Webpage() {
       alert("Please enter a valid email address.");
       return;
     }
-  
-    setUserEmail(em);
+    
+    if(emailQuery != em && typeof emailQuery == 'string') {
+      setUserEmail(emailQuery)
+    }
+    else {
+      setUserEmail(em);
+    }
+    
     setShow(false); // Close the modal here
     sendEmail(user_email, ID);
     const timestamp = new Date().toISOString();
