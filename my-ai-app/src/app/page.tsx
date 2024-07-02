@@ -26,7 +26,7 @@ type CopiedText = {
 
 type TimerThing = {
   tab: string;
-  time: number;
+  time: string;
 }
 
 export default function Webpage() {
@@ -38,10 +38,8 @@ export default function Webpage() {
   const [text, setText] = useState("");
   const [copiedTexts, setCopiedTexts] = useState<CopiedText[]>([]);
   const [tab , setTab] = useState('prompt');
-  const [timeElapsed, setTimeElapsed] = useState(0);
-  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
   const [tempVar, setTempVar] = useState("prompt");
-  const [timerDict, setTimerDict] = useState<TimerThing[]>([]);
+  const [tabLog, setTabLog] = useState<TimerThing[]>([]);
 
 
   const handleClose = () => {
@@ -63,7 +61,8 @@ export default function Webpage() {
     setUserEmail(em);
     setShow(false); // Close the modal here
     sendEmail(user_email, ID);
-    startTimer();
+    const timestamp = new Date().toISOString();
+  setTabLog((prevLogs) => [...prevLogs, { tab: 'prompt', time: timestamp }]);
   };
 
   useEffect(() => {
@@ -106,57 +105,12 @@ export default function Webpage() {
     }
   }
 
-  useEffect(() => {
-    console.log("ID state changed:", ID);
-  }, [ID]);
-
   const handleTabChange = (t) => {
-    if(t == 'prompt') {
-      setTab('prompt');
-      startTimer();
-    }
-    else if(t == 'gpt') {
-      setTab('gpt');
-      startTimer();
-    }
-    else if(t == 'hidden') {
-      setTab('hidden');
-      startTimer();
-    }
-  }
-
-  useEffect(() => {
-    console.log("Tab state updated to:", tab, "Time elapsed:", timeElapsed);
-    setTimerDict([...timerDict, {tab: tab, time: timeElapsed}]);
-    setTimeElapsed(0);
-  }, [tab]);
-
-
-
-  const startTimer = () => {
-    if (timerInterval) return; // Prevent multiple intervals from being set
-    const interval = setInterval(() => {
-      setTimeElapsed((prevTime) => prevTime + 1);
-    }, 1000);
-    setTimerInterval(interval);
+    const timestamp = new Date().toISOString();
+    console.log("Tab changed to:", t, "at:", timestamp);
+    setTab(t);
+    setTabLog((prevLogs) => [...prevLogs, { tab: t, time: timestamp }]);
   };
-
-  const stopTimer = () => {
-    if (timerInterval) {
-      clearInterval(timerInterval);
-      setTimerInterval(null);
-    }
-  };
-
-  useEffect(() => {
-    // Clean up the interval on component unmount
-    return () => {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-      }
-    };
-  }, [timerInterval]);
-
   
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -289,7 +243,7 @@ export default function Webpage() {
               <div className="editors">
                 <MyCodeMirrorComponent
                   sendToDB={(recordingData, fintext) =>
-                    sendToDB(user_email, messages, recordingData, fintext, copiedTexts, timerDict, ID)
+                    sendToDB(user_email, messages, recordingData, fintext, copiedTexts, tabLog, ID)
                   }
                   updateRecordingData={setRecordingData}
                   updateFinalText={setText}
