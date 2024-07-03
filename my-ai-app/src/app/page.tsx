@@ -75,11 +75,10 @@ export default function Webpage() {
     else {
       setUserEmail(em);
     }
-    
-    setShow(false); // Close the modal here
-    sendEmail(user_email, ID);
     const timestamp = new Date().toISOString();
-  setTabLog((prevLogs) => [...prevLogs, { tab: 'prompt', time: timestamp }]);
+    setShow(false); // Close the modal here
+    sendEmail(user_email, ID, timestamp);
+    setTabLog((prevLogs) => [...prevLogs, { tab: 'prompt', time: timestamp }]);
   };
 
   useEffect(() => {
@@ -369,9 +368,8 @@ async function sendToDB(user_email, mess, recording, text, copies, timers, objec
   }
 }
 
-async function sendEmail(user_email, objectId)
+async function sendEmail(user_email, objectId, startTime)
 {
-  const startTime = new Date().toISOString();
   try {
     const emailResponse = await axios.post("http://gptwriting.cs.vt.edu:8080/save_email", {
       user_id: objectId,
