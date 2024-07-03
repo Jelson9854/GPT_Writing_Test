@@ -51,6 +51,16 @@ export default function Webpage() {
     const emailFromURL = urlParams.get('email');
     setEmailQuery(emailFromURL);
   }, []);
+  
+  useEffect(() => {
+    const handleLoad = () => {
+    const timestamp = new Date().toISOString();
+    setTabLog((prevLogs) => [...prevLogs, { tab: 'prompt', time: timestamp }]);
+  };
+
+  window.onload = handleLoad;
+git 
+});
 
 
   const handleClose = () => {
