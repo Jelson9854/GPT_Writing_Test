@@ -126,7 +126,6 @@ export default function Webpage() {
     if (typeof t == 'string') {
       const timestamp = new Date().toISOString();
       console.log("Tab changed to:", t, "at:", timestamp);
-      setTempVar(t);
       setTab(t);
       setTabLog((prevLogs) => [...prevLogs, { tab: t, time: timestamp }]);
     }
@@ -136,6 +135,7 @@ export default function Webpage() {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
         console.log('Tab is now hidden');
+        setTempVar(tab);
         handleTabChange('hidden');
         // Add your logic here for when the tab becomes hidden
       } else if (document.visibilityState === 'visible') {
