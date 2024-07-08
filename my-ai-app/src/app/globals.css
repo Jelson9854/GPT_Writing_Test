@@ -743,3 +743,7 @@ p {
   background-color: #10a37f !important;
   color: white;
 }
+
+.cm-editor { 
+  border: 1px solid black 
+}

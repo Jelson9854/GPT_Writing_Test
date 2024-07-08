@@ -179,7 +179,7 @@ export default function Webpage() {
             <Tab eventKey="prompt" title="Writing" className="content">
               <div className="margins"></div>
               <div className="flex justify-between gap-4">
-              <div className="question flex flex-col gap-6">
+              <div className="question flex flex-col gap-6 border border-black">
                 <span className="body-text-small">
                   The test describes an issue and provides three different
                   perspectives on the issue. You are asked to read and consider
@@ -238,7 +238,7 @@ export default function Webpage() {
                 </div>
 
               </div>
-              <div className="editors">
+              <div className="editors border border-black">
                 <MyCodeMirrorComponent
                   email = {user_email}
                   sendToDB={(recordingData, fintext) =>
@@ -261,15 +261,15 @@ export default function Webpage() {
             <Tab eventKey={"gpt"} title="ChatGPT" onSelect={handleTabChange}>
               <div className="margins"></div>
               <div className="flex flex-col items-center justify-center gap-3">
-              <div className="flex flex-col justify-between border border-gray-400 rounded-md !min-w-full overflow-y-scroll overflow-x-hidden">
+              <div className="flex flex-col justify-between border border-black rounded-md !min-w-full overflow-y-scroll overflow-x-hidden">
                 <div className="edit mb-auto h-[80vh] !min-w-full">
                   {messages.map((m) => (
                     <div
                       key={m.id}
                       className={
                         m.role === "user"
-                          ? "row w-full py-[20px] pl-[50px] text-black mx-0 border-solid"
-                          : "row w-full py-[20px] pl-[50px] bg-white text-black mx-0 border-solid"
+                          ? "row w-full py-[20px] pl-[50px] text-black mx-0 border border-black"
+                          : "row w-full py-[20px] pl-[50px] bg-white text-black mx-0 border border-black"
                       }
                     >
                       <div className="chat-icon">
@@ -295,7 +295,7 @@ export default function Webpage() {
                 </div>
               </div>
               <form
-                    className="overflow-hidden bg-white flex align-content-center items-center justify-center h-26 mt-auto border border-gray-300 rounded-md"
+                    className="overflow-hidden bg-white flex align-content-center items-center justify-center h-26 mt-auto border border-black rounded-md"
                     onSubmit={handleSubmit}
                     onSelect={() => {console.log("Selected")}}
                   >

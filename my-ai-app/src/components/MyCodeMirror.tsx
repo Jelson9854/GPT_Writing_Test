@@ -110,7 +110,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
 
     return (
       <div>
-        <div ref={codeMirrorRef}></div>
+        <div className="border-b border-black" ref={codeMirrorRef}></div>
         <div className="control-buttons">
           <button
             id="submission"
