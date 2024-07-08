@@ -735,11 +735,11 @@ p {
 }
 
 .nav-fill .nav-item .nav-link, .nav-justified .nav-item .nav-link {
-  background-color: #10a37f;
-  color: white;
+  background-color: #7cbbd8;
+  color: black;
 }
 
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
-  background-color: white !important;
-  color: black;
+  background-color: #10a37f !important;
+  color: white;
 }
