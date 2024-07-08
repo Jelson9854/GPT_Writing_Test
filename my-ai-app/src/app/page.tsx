@@ -16,7 +16,7 @@ import MyCodeMirrorComponent from "../components/MyCodeMirror";
 import { useChat } from "ai/react";
 import Image from "next/image";
 import { v4 as uuidv4 } from 'uuid';
-import { BsArrowUpSquareFill } from "react-icons/bs";
+import { FiArrowUpCircle } from "react-icons/fi";
 import { SyntheticModule } from "vm";
 
 type CopiedText = {
@@ -34,14 +34,13 @@ export default function Webpage() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   const [recordingData, setRecordingData] = useState([]);
   const ID = useState(() => uuidv4())[0]; // Initialize ID using an initializer function
-  const [user_email, setUserEmail] = useState("");
+  const [user_email, setUserEmail] = useState<string | null>("");
   const [show, setShow] = useState(true);
   const [text, setText] = useState("");
   const [copiedTexts, setCopiedTexts] = useState<CopiedText[]>([]);
   const [tab , setTab] = useState('prompt');
   const [tempVar, setTempVar] = useState("prompt");
   const [tabLog, setTabLog] = useState<TimerThing[]>([]);
-  const [emailQuery, setEmailQuery] = useState<string | null>("");
 
   useEffect(() => {
     const queryString = window.location.search;
@@ -49,7 +48,7 @@ export default function Webpage() {
   
     const urlParams = new URLSearchParams(queryString);
     const emailFromURL = urlParams.get('email');
-    setEmailQuery(emailFromURL);
+    setUserEmail(emailFromURL);
   }, []);
   
   useEffect(() => {
@@ -69,26 +68,10 @@ export default function Webpage() {
   
   const onFormSubmit = async (e) => {
     e.preventDefault();
-    const em = e.target[0].value;
-  
-    // Email validation regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-    if (!emailRegex.test(em)) {
-      alert("Please enter a valid email address.");
-      return;
-    }
-    
-    if(emailQuery != em && typeof emailQuery == 'string') {
-      setUserEmail(emailQuery)
-    }
-    else {
-      setUserEmail(em);
-    }
     const timestamp = new Date().toISOString();
     setShow(false); // Close the modal here
-    sendEmail(user_email, ID, timestamp);
     setTabLog((prevLogs) => [...prevLogs, { tab: 'prompt', time: timestamp }]);
+    sendEmail(user_email, ID, timestamp);
   };
 
   useEffect(() => {
@@ -182,27 +165,13 @@ export default function Webpage() {
               ChatGPT tab. Upon completion hit the submit button. If you leave
               the page we will not store your data, so you will lose your
               response. Only hit the submission button once at the end to not
-              overwrite your data.
+              overwrite your data. Upon submission you will be redirected to an exit
+              survey. If you were not redirected, please contact the researcher.
             </p>
             <br />
-            <Form onSubmit={onFormSubmit}>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label>Email address</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="name@example.com"
-                  autoFocus
-                  value={user_email}
-                  onChange={(e) => setUserEmail(e.target.value)}
-                />
-              </Form.Group>
-              <Button variant="secondary" type="submit">
-                Submit
-              </Button>
-            </Form>
+            <Button variant="secondary" type="submit" onClick={onFormSubmit}>
+              Start
+            </Button>
           </Modal.Body>
         </Modal>
         <Row className="justify-content pr-0">
@@ -211,7 +180,7 @@ export default function Webpage() {
               <div className="margins"></div>
               <div className="flex justify-between gap-4">
               <div className="question flex flex-col gap-6">
-                <span className="body-text-small-dark">
+                <span className="body-text-small">
                   The test describes an issue and provides three different
                   perspectives on the issue. You are asked to read and consider
                   the issue and perspectives, state your own perspective on the
@@ -271,6 +240,7 @@ export default function Webpage() {
               </div>
               <div className="editors">
                 <MyCodeMirrorComponent
+                  email = {user_email}
                   sendToDB={(recordingData, fintext) =>
                     sendToDB(user_email, messages, recordingData, fintext, copiedTexts, tabLog, ID)
                   }
@@ -298,8 +268,8 @@ export default function Webpage() {
                       key={m.id}
                       className={
                         m.role === "user"
-                          ? "row w-full py-[20px] pl-[50px] text-white mx-0"
-                          : "row w-full py-[20px] pl-[50px] bg-[#404350] text-white mx-0"
+                          ? "row w-full py-[20px] pl-[50px] text-black mx-0 border-solid"
+                          : "row w-full py-[20px] pl-[50px] bg-white text-black mx-0 border-solid"
                       }
                     >
                       <div className="chat-icon">
@@ -325,7 +295,7 @@ export default function Webpage() {
                 </div>
               </div>
               <form
-                    className="overflow-hidden bg-[#40414f] flex align-content-center items-center justify-center h-26 mt-auto border border-gray-300 rounded-md "
+                    className="overflow-hidden bg-white flex align-content-center items-center justify-center h-26 mt-auto border border-gray-300 rounded-md"
                     onSubmit={handleSubmit}
                     onSelect={() => {console.log("Selected")}}
                   >
@@ -338,7 +308,7 @@ export default function Webpage() {
                     >
                     </textarea>
                     <Button type="submit" variant="ghost" className="!bg-transparent p-0 m-0 h-[40px] w-[40px]">
-                      <BsArrowUpSquareFill size={40} />
+                      <FiArrowUpCircle size={40}/>
                     </Button>
                   </form>
               </div>

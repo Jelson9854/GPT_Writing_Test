@@ -12,6 +12,7 @@ import { CodeRecord } from "codemirror-record"; // Ensure this is the correct im
 import 'codemirror-spell-checker';
 
 interface MyCodeMirrorComponentProps {
+  email: string | null;
   sendToDB: (recording: any, fintext: any) => Promise<any>;
   updateRecordingData: (data: any) => void;
   updateFinalText: (data: any) => void;
@@ -24,6 +25,7 @@ interface CodeRecordInstance {
 
 const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
   (props, ref) => {
+    const user_email = props.email;
     const codeMirrorRef = useRef<HTMLDivElement>(null);
     const codeRecorderRef = useRef<CodeRecordInstance | null>(null);
     const codeMirrorInstanceRef = useRef<CodeMirror.Editor | null>(null);
@@ -34,7 +36,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
         const codeMirrorInstance = CodeMirror(codeMirrorRef.current, {
           lineNumbers: false,
           lineWrapping: true,
-          theme: "material-darker",
+          theme: "elegant",
           spellcheck: true,
         });
     
@@ -80,7 +82,11 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
             .sendToDB(recordsArray, finText)
             .then((response) => {
               console.log("Data sent successfully:", response);
-              alert("Thank you for your submission. Please fill out the exit survey at the following link: \nhttps://virginiatech.questionpro.com/GPTWritingExitSurvey \n\nYour participation is greatly appreciated!");
+              let cont = window.confirm("Thank you for your submission. Please fill out the exit survey \n\nYour participation is greatly appreciated!");
+              if(cont)
+                {
+                  window.open("https://virginiatech.questionpro.com/GPTWritingExitSurvey?ext_ref="+ user_email, '_blank')
+                }
             })
             .catch((error) => {
               console.error("Error sending data:", error);
