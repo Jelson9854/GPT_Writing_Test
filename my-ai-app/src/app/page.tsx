@@ -112,7 +112,7 @@ export default function Webpage() {
   useEffect(() => {
     window.addEventListener("beforeunload", function (e) {
       e.preventDefault();
-      e.returnValue = "Do you want to leave the page? Your progress will NOT be saved";
+      e.returnValue = "Do you want to leave the page? Your progress will NOT be saved. If you have already submitted, you can ignore this message.";
       setTimeout(function () {
         // Timeout to wait for user response
         setTimeout(function () {
@@ -120,7 +120,7 @@ export default function Webpage() {
           console.log("User stayed on the page.");
         }, 50);
       }, 50);
-      return "Do you want to leave the page? Your progress will NOT be saved";
+      return "Do you want to leave the page? Your progress will NOT be saved. If you have already submitted, you can ignore this message.";
     });
   });
 
