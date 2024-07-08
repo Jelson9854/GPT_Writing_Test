@@ -80,7 +80,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
             .sendToDB(recordsArray, finText)
             .then((response) => {
               console.log("Data sent successfully:", response);
-              alert("Thank you for your submission. Please fill out the exit survey at the following link: https://virginiatech.questionpro.com/GPTWritingExitSurvey. Your participation is greatly appreciated!");
+              alert("Thank you for your submission. Please fill out the exit survey at the following link: \nhttps://virginiatech.questionpro.com/GPTWritingExitSurvey \nYour participation is greatly appreciated!");
             })
             .catch((error) => {
               console.error("Error sending data:", error);
