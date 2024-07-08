@@ -59,7 +59,7 @@ export default function Webpage() {
   };
 
   window.onload = handleLoad;
-git 
+
 });
 
 
@@ -112,7 +112,7 @@ git
   useEffect(() => {
     window.addEventListener("beforeunload", function (e) {
       e.preventDefault();
-      e.returnValue = "Do you want to leave the page?";
+      e.returnValue = "Do you want to leave the page? Your progress will NOT be saved";
       setTimeout(function () {
         // Timeout to wait for user response
         setTimeout(function () {
@@ -120,7 +120,7 @@ git
           console.log("User stayed on the page.");
         }, 50);
       }, 50);
-      return "Do you want to leave the page?";
+      return "Do you want to leave the page? Your progress will NOT be saved";
     });
   });
 

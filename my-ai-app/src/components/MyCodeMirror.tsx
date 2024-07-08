@@ -50,7 +50,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
     }, []);
 
     const handleSubmission = useCallback(() => {
-      const isConfirmed = window.confirm("Are you sure you want to submit?");
+      const isConfirmed = window.confirm("Are you sure you want to submit? Please wait for the popup window to appear for the exit survey.");
       if (isConfirmed && codeRecorderRef.current) {
         // Retrieve the final text
         const lines = codeMirrorInstanceRef.current?.getValue().split("\n");
@@ -80,7 +80,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
             .sendToDB(recordsArray, finText)
             .then((response) => {
               console.log("Data sent successfully:", response);
-              alert("Thank you for your submission");
+              alert("Thank you for your submission. Please fill out the exit survey at the following link: https://virginiatech.questionpro.com/GPTWritingExitSurvey. Your participation is greatly appreciated!");
             })
             .catch((error) => {
               console.error("Error sending data:", error);
