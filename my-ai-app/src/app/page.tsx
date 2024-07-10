@@ -71,6 +71,7 @@ export default function Webpage() {
     const timestamp = new Date().toISOString();
     setShow(false); // Close the modal here
     setTabLog((prevLogs) => [...prevLogs, { tab: 'prompt', time: timestamp }]);
+
     sendEmail(user_email, ID, timestamp);
   };
 
@@ -346,6 +347,7 @@ export default function Webpage() {
 async function sendToDB(user_email, mess, recording, text, copies, timers, objectId) {
   
   const timestamp = new Date().toISOString();
+
   try {
     // Make the first asynchronous request to save messages
     const messageResponse = await axios.post("http://gptwriting.cs.vt.edu:8080/save_messages", {
@@ -365,6 +367,7 @@ async function sendToDB(user_email, mess, recording, text, copies, timers, objec
       final_text: text,
       end_time: timestamp,
     });
+    console.log(timestamp);
     console.log("Recording and final text saved:", recordingResponse.data);
 
     // Return whatever information is needed
