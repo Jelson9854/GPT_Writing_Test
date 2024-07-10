@@ -112,6 +112,7 @@ app.post('/save_email', jsonParser, async(req, res) => {
             recording: [],
             final_text: [],
             start: startTime,
+            end: "",
         });
 
         await users.insertOne({
@@ -147,11 +148,11 @@ app.post('/save_messages', jsonParser, async(req, res) => {
 
 app.post('/save_recording', jsonParser, async(req, res) => {
     try {
-        const { user_id, email, rec_thingy, final_text } = req.body;
+        const { user_id, email, rec_thingy, final_text, end_time } = req.body;
         // Assume user_id is already an ObjectId
         await recording.updateOne(
             { _id: user_id },
-            { $set: { email, recording: rec_thingy, final_text } }
+            { $set: { email, recording: rec_thingy, final_text, end: end_time } }
         );
         res.status(200).json({ success: true });
         console.log('saved recording')
