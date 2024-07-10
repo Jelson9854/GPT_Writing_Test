@@ -97,6 +97,7 @@ app.post('/save_email', jsonParser, async(req, res) => {
         const { user_id, email, startTime } = req.body;
         // Assume user_id is already an ObjectId
         // Create a new document in the messages collection
+        console.log(startTime)
         await messages.insertOne({
             _id: user_id,
             email,
@@ -149,6 +150,7 @@ app.post('/save_messages', jsonParser, async(req, res) => {
 app.post('/save_recording', jsonParser, async(req, res) => {
     try {
         const { user_id, email, rec_thingy, final_text, end_time } = req.body;
+        console.log(end_time)
         // Assume user_id is already an ObjectId
         await recording.updateOne(
             { _id: user_id },
