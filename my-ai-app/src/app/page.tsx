@@ -79,17 +79,41 @@ export default function Webpage() {
       const text = window.getSelection()?.toString();
       if (text) {
         const timestamp = new Date().toISOString();
-        let item = {'time':timestamp, 'text':text, 'tab':tab};
+  
+        let currentTab = 'prompt'; // Default to 'prompt' if not within 'editors' or 'gpt'
+  
+        // Check if the copy event occurs within an element with the class 'editors'
+        const targetElement = e.target as Element | null;
+        const isWithinEditors = targetElement?.closest('.editors');
+  
+        // Check if the copy event occurs within the GPT tab
+        const isWithinGptTab = targetElement?.closest('.gpt_tab'); // Example class for GPT tab
+  
+        if (isWithinEditors) {
+          currentTab = 'editor'; // Set the tab to 'editor' if within 'editors'
+          console.log(currentTab)
+        } else if (isWithinGptTab) {
+          currentTab = 'gpt'; // Set the tab to 'gpt' if within the GPT tab
+          console.log(currentTab)
+        } else {
+          currentTab = 'prompt'; // Default to 'prompt' if not within 'editors' or 'gpt'
+          console.log(currentTab)
+        }
+  
+        // Create the copied text item
+        let item = { time: timestamp, text: text, tab: currentTab };
         setCopiedTexts((prevTexts) => [...prevTexts, item]);
       }
     };
-
+  
     document.addEventListener("copy", handleCopy);
-
+  
     return () => {
       document.removeEventListener("copy", handleCopy);
     };
   }, []);
+   // Ensure to include 'tab' in the dependency array for useEffect
+  
   
 
   useEffect(() => {
@@ -260,7 +284,7 @@ export default function Webpage() {
             </Tab>
             <Tab eventKey={"gpt"} title="ChatGPT" onSelect={handleTabChange}>
               <div className="margins"></div>
-              <div className="flex flex-col items-center justify-center gap-3">
+              <div className="flex flex-col items-center justify-center gap-3 gpt_tab">
               <div className="flex flex-col justify-between border border-black rounded-md !min-w-full overflow-y-scroll overflow-x-hidden">
                 <div className="edit mb-auto h-[80vh] !min-w-full">
                   {messages.map((m) => (
@@ -297,7 +321,6 @@ export default function Webpage() {
               <form
                     className="overflow-hidden bg-white flex align-content-center items-center justify-center h-26 mt-auto border border-black rounded-md"
                     onSubmit={handleSubmit}
-                    onSelect={() => {console.log("Selected")}}
                   >
                     <textarea
                       className="bottom-0 w-full max-w-xl p-2 chat-inputs-container h-15"
@@ -321,6 +344,8 @@ export default function Webpage() {
 }
 
 async function sendToDB(user_email, mess, recording, text, copies, timers, objectId) {
+  
+  const timestamp = new Date().toISOString();
   try {
     // Make the first asynchronous request to save messages
     const messageResponse = await axios.post("http://gptwriting.cs.vt.edu:8080/save_messages", {
@@ -338,6 +363,7 @@ async function sendToDB(user_email, mess, recording, text, copies, timers, objec
       email: user_email,
       rec_thingy: recording,
       final_text: text,
+      end_time: timestamp,
     });
     console.log("Recording and final text saved:", recordingResponse.data);
 
