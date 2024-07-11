@@ -112,7 +112,7 @@ app.post('/save_email', jsonParser, async(req, res) => {
             email,
             recording: [],
             final_text: [],
-            start: new Date().toISOString(),
+            start: startTime,
             end: null,
         });
 

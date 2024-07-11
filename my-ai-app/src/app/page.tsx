@@ -380,11 +380,12 @@ async function sendToDB(user_email, mess, recording, text, copies, timers, objec
 
 async function sendEmail(user_email, objectId, startTime)
 {
+  const timestamp = new Date().toISOString();
   try {
     const emailResponse = await axios.post("http://gptwriting.cs.vt.edu:8080/save_email", {
       user_id: objectId,
       email: user_email,
-      start: startTime,
+      start: timestamp,
     });
     console.log("Email saved to databases: ", emailResponse.data)
   } catch(error)
