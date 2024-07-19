@@ -191,7 +191,8 @@ export default function Webpage() {
               the page we will not store your data, so you will lose your
               response. Only hit the submission button once at the end to not
               overwrite your data. Upon submission you will be redirected to an exit
-              survey. If you were not redirected, please contact the researcher.
+              survey. If you were not redirected, please contact the researcher. The 
+              redirect is considered a pop-up so it might be blocked.
             </p>
             <br />
             <Button variant="secondary" type="submit" onClick={onFormSubmit}>
@@ -350,7 +351,7 @@ async function sendToDB(user_email, mess, recording, text, copies, timers, objec
 
   try {
     // Make the first asynchronous request to save messages
-    const messageResponse = await axios.post("http://gptwriting.cs.vt.edu:8080/save_messages", {
+    const messageResponse = await axios.post("https://gptwriting.cs.vt.edu/save_messages", {
       user_id: objectId,
       email: user_email,
       mess_array: mess,
@@ -360,7 +361,7 @@ async function sendToDB(user_email, mess, recording, text, copies, timers, objec
     console.log("Message saved:", messageResponse.data);
 
     // Make the second asynchronous request to save recording and text
-    const recordingResponse = await axios.post("http://gptwriting.cs.vt.edu:8080/save_recording", {
+    const recordingResponse = await axios.post("https://gptwriting.cs.vt.edu/save_recording", {
       user_id: objectId,
       email: user_email,
       rec_thingy: recording,
@@ -382,7 +383,7 @@ async function sendEmail(user_email, objectId, startTime)
 {
   const timestamp = new Date().toISOString();
   try {
-    const emailResponse = await axios.post("http://gptwriting.cs.vt.edu:8080/save_email", {
+    const emailResponse = await axios.post("https://gptwriting.cs.vt.edu/save_email", {
       user_id: objectId,
       email: user_email,
       start: timestamp,
