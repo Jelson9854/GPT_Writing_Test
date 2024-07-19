@@ -11,13 +11,13 @@ const { MongoClient, ObjectId } = mongodb;
 const app = express();
 const PORT = process.env.PORT || 8080;
 
- const corsOptions = {
- 	origin: 'https://gptwriting.cs.vt.edu',
- 	methods: 'POST',
+const corsOptions = {
+ 	origin: 'https//gptwriting.cs.vt.edu',
+ 	methods: '[POST]',
  	credentials: true
  };
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json())
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -92,7 +92,7 @@ app.use(jsonParser); // Parse JSON bodies
 //     }
 // })
 
-app.post('/save_email', jsonParser, async(req, res) => {
+app.post('/api/save_email', jsonParser, async(req, res) => {
     try {
         const { user_id, email, startTime } = req.body;
         // Assume user_id is already an ObjectId
@@ -132,7 +132,7 @@ app.post('/save_email', jsonParser, async(req, res) => {
 });
 
 
-app.post('/save_messages', jsonParser, async(req, res) => {
+app.post('/api/save_messages', jsonParser, async(req, res) => {
     try {
         const { user_id, email, mess_array, copy_array, timer_array } = req.body;
         // Assume user_id is already an ObjectId
@@ -148,7 +148,7 @@ app.post('/save_messages', jsonParser, async(req, res) => {
     }
 });
 
-app.post('/save_recording', jsonParser, async(req, res) => {
+app.post('/api/save_recording', jsonParser, async(req, res) => {
     try {
         const { user_id, email, rec_thingy, final_text, end_time } = req.body;
         console.log(end_time)

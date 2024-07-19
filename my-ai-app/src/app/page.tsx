@@ -44,10 +44,10 @@ export default function Webpage() {
 
   useEffect(() => {
     const queryString = window.location.search;
-    console.log(queryString);
-  
+      
     const urlParams = new URLSearchParams(queryString);
     const emailFromURL = urlParams.get('email');
+    console.log(emailFromURL);
     setUserEmail(emailFromURL);
   }, []);
   
@@ -351,7 +351,7 @@ async function sendToDB(user_email, mess, recording, text, copies, timers, objec
 
   try {
     // Make the first asynchronous request to save messages
-    const messageResponse = await axios.post("https://gptwriting.cs.vt.edu/save_messages", {
+    const messageResponse = await axios.post("https://gptwriting.cs.vt.edu/api/save_messages", {
       user_id: objectId,
       email: user_email,
       mess_array: mess,
@@ -361,7 +361,7 @@ async function sendToDB(user_email, mess, recording, text, copies, timers, objec
     console.log("Message saved:", messageResponse.data);
 
     // Make the second asynchronous request to save recording and text
-    const recordingResponse = await axios.post("https://gptwriting.cs.vt.edu/save_recording", {
+    const recordingResponse = await axios.post("https://gptwriting.cs.vt.edu/api/save_recording", {
       user_id: objectId,
       email: user_email,
       rec_thingy: recording,
@@ -383,7 +383,7 @@ async function sendEmail(user_email, objectId, startTime)
 {
   const timestamp = new Date().toISOString();
   try {
-    const emailResponse = await axios.post("https://gptwriting.cs.vt.edu/save_email", {
+    const emailResponse = await axios.post("https://gptwriting.cs.vt.edu/api/save_email", {
       user_id: objectId,
       email: user_email,
       start: timestamp,
