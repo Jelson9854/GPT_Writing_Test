@@ -202,11 +202,11 @@ export default function Webpage() {
           backdrop="static"
           keyboard={false}
         >
-          <Modal.Header>
-            <Modal.Title className="modal-header">Instructions</Modal.Title>
+          <Modal.Header className='!p-2 !justify-center'>
+            <Modal.Title className="modal-header p-2">Instructions</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            <ul>
+          <Modal.Body className='pl-8'>
+            <ul className='list-disc'>
               <li>
               The text box on this website starts recording immediately, any
               operations made will be recorded.
@@ -236,10 +236,12 @@ export default function Webpage() {
               </li>
 
             </ul>
-            <br />
+            <div className='flex mt-4 justify-center'>
             <Button variant="secondary" type="submit" onClick={onFormSubmit}>
               Start
             </Button>
+            </div>
+
           </Modal.Body>
         </Modal>
         <Row className="justify-content pr-0">
