@@ -41,10 +41,11 @@ export default function Webpage() {
   const [tab , setTab] = useState('prompt');
   const [tempVar, setTempVar] = useState("prompt");
   const [tabLog, setTabLog] = useState<TimerThing[]>([]);
+  const [time, setTime] = useState<number>(0);
+  const [running, setRunning] = useState<boolean>(false);
 
   useEffect(() => {
     const queryString = window.location.search;
-      
     const urlParams = new URLSearchParams(queryString);
     const emailFromURL = urlParams.get('email');
     console.log(emailFromURL);
@@ -71,7 +72,7 @@ export default function Webpage() {
     const timestamp = new Date().toISOString();
     setShow(false); // Close the modal here
     setTabLog((prevLogs) => [...prevLogs, { tab: 'prompt', time: timestamp }]);
-
+    setRunning(true);
     sendEmail(user_email, ID, timestamp);
   };
 
@@ -171,6 +172,27 @@ export default function Webpage() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   });
+
+  // Stopwatch Function
+  useEffect(() => {
+    let interval: NodeJS.Timeout | undefined;
+    if (running) {
+      interval = setInterval(() => {
+        setTime(prevTime => prevTime + 1);
+      }, 1000);
+    } else if (!running && time !== 0) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [running, time]);
+
+  const formatTime = (seconds: number): string => {
+    const getSeconds = `0${seconds % 60}`.slice(-2);
+    const totalMinutes = Math.floor(seconds / 60);
+    const getMinutes = `0${totalMinutes % 60}`.slice(-2);
+    const getHours = `0${Math.floor(totalMinutes / 60)}`.slice(-2);
+    return `${getHours} : ${getMinutes} : ${getSeconds}`;
+  };
   
 
 
@@ -179,20 +201,20 @@ export default function Webpage() {
       <Container>
         <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
           <Modal.Header>
-            <Modal.Title className="modal-header">Enter Your Email</Modal.Title>
+            <Modal.Title className="modal-header">Instructions</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <p>
-              Instructions for use:
-              <br />
-              Enter your email to start the assignment. The text box starts
-              recording immediately. If you wish to use ChatGPT please click the
-              ChatGPT tab. Upon completion hit the submit button. If you leave
-              the page we will not store your data, so you will lose your
-              response. Only hit the submission button once at the end to not
+              The text box on this website starts recording immediately, any operations made
+              will be recorded. If you wish to use ChatGPT please click the
+              ChatGPT tab. Upon completion of the essay, hit the submit button. 
+              If you leave the webpage we will not store your data, so you will lose 
+              your response. Only hit the submission button once at the end to not
               overwrite your data. Upon submission you will be redirected to an exit
               survey. If you were not redirected, please contact the researcher. The 
-              redirect is considered a pop-up so it might be blocked.
+              redirect is considered a pop-up so it might be blocked. There is a stopwatch
+              in the bottom left corner. Please do not spend any longer than 30-40 minutes
+              writing your essay.
             </p>
             <br />
             <Button variant="secondary" type="submit" onClick={onFormSubmit}>
@@ -203,16 +225,27 @@ export default function Webpage() {
         <Row className="justify-content pr-0">
           <Tabs justify variant="tabs" defaultActiveKey={"prompt"} className="pr-0" onSelect={handleTabChange}>
             <Tab eventKey="prompt" title="Writing" className="content">
-              <div className="margins"></div>
+              <div className="margins">
+              <div className="fixed bottom-0 left-0 m-4 p-4 bg-gray-800 text-white rounded-lg">
+      <div>{formatTime(time)}</div>
+      <div className="mt-2">
+      </div>
+    </div>
+              </div>
               <div className="flex justify-between gap-4">
               <div className="question flex flex-col gap-6 border border-black">
                 <span className="body-text-small">
-                  The test describes an issue and provides three different
+                  We will describe an issue and provide three different
                   perspectives on the issue. You are asked to read and consider
                   the issue and perspectives, state your own perspective on the
                   issue, and analyze the relationship between your perspective
-                  and at least one other perspective on the issue. Your score
-                  will not be affected by the perspective you take on the issue.
+                  and at least one other perspective on the issue.
+                </span>
+                <span>
+                  <h2 className="font-bold">Issue:</h2>
+                  <p>
+                    Automation is generally seen as a sign of progress, but what is 
+                    lost when we replace humans with machines?</p>
                 </span>
                 <span>
                   <h2 className="font-bold">Intelligent Machines</h2>
@@ -231,37 +264,46 @@ export default function Webpage() {
                   the implications and meaning of their presence in our lives.
                 </span>
                 <p></p>
-                <div className="flex flex-col">
-                  <div className="mb-3">
-                    <h3 className="font-bold">Perspective One </h3>
-                    <span className="body-text-small-dark">
-                      What we lose with the replacement of people by
-                      machines is some part of our own humanity. Even our
-                      mundane daily encounters no longer require from us
-                      basic courtesy, respect, and tolerance for other
-                      people.
-                    </span>
-                  </div>
-                  <div className="my-3">
-                    <h3 className="font-bold">Perspective Two</h3>
-                  <span className="body-text-small-dark">
-                      Machines are good at low-skill, repetitive jobs, and
-                      at high-speed, extremely precise jobs. In both cases
-                      they work better than humans. This efficiency leads
-                      to a more prosperous and progressive world for
-                      everyone.
-                    </span>
-                  </div>                       
-                  <div className="mt-3">
-                    <h3 className="font-bold">Perspective Three</h3>
-                  <span className="body-text-small-dark">
-                      Intelligent machines challenge our long-standing
-                      ideas about what humans are or can be. This is good
-                      because it pushes both humans and machines toward
-                      new, unimagined possibilities.
-                    </span>
-                  </div>
-                </div>
+                <div className="grid grid-cols-[2fr_1fr] gap-4">
+  <div className="mb-3 pr-5 border-r border-black">
+    <h3 className="font-bold">Perspective One</h3>
+    <span className="body-text-small-dark">
+      What we lose with the replacement of people by machines is some part of our own humanity. Even our mundane daily encounters no longer require from us basic courtesy, respect, and tolerance for other people.
+    </span>
+  </div>
+  <div className="mb-3">
+    <h3 className="font-bold">Meaning</h3>
+    <span className="body-text-small-dark">
+      Intelligent machines are a detriment to humanity.
+    </span>
+  </div>
+  <div className="my-3 pr-5 border-r border-black">
+    <h3 className="font-bold">Perspective Two</h3>
+    <span className="body-text-small-dark">
+      Machines are good at low-skill, repetitive jobs, and at high-speed, extremely precise jobs. In both cases they work better than humans. This efficiency leads to a more prosperous and progressive world for everyone.
+    </span>
+  </div>
+  <div className="my-3">
+    <h3 className="font-bold">Meaning</h3>
+    <span className="body-text-small-dark">
+      In some areas, machines replacing humans is better.
+    </span>
+  </div>
+  <div className="mt-3 pr-5 border-r border-black">
+    <h3 className="font-bold">Perspective Three</h3>
+    <span className="body-text-small-dark">
+      Intelligent machines challenge our long-standing ideas about what humans are or can be. This is good because it pushes both humans and machines toward new, unimagined possibilities.
+    </span>
+  </div>
+  <div className="mt-3">
+    <h3 className="font-bold">Meaning</h3>
+    <span className="body-text-small-dark">
+      Machines are very beneficial to society and human technological advancement.
+    </span>
+  </div>
+</div>
+
+
 
               </div>
               <div className="editors border border-black">
