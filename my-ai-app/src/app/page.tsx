@@ -186,11 +186,11 @@ export default function Webpage() {
   }, [running, time]);
 
   const formatTime = (seconds: number): string => {
-    const getSeconds = `0${seconds % 60}`.slice(-2);
+    // const getSeconds = `0${seconds % 60}`.slice(-2);
     const totalMinutes = Math.floor(seconds / 60);
-    const getMinutes = `0${totalMinutes % 60}`.slice(-2);
-    const getHours = `0${Math.floor(totalMinutes / 60)}`.slice(-2);
-    return `${getHours} : ${getMinutes} : ${getSeconds}`;
+    const getMinutes = `${totalMinutes}`.slice(-2);
+    // const getHours = `0${Math.floor(totalMinutes / 60)}`.slice(-2);
+    return `${getMinutes} minutes elapsed`;
   };
 
   return (
@@ -201,49 +201,60 @@ export default function Webpage() {
           onHide={handleClose}
           backdrop="static"
           keyboard={false}
+          size='lg'
         >
-          <Modal.Header className='!p-2 !justify-center'>
-            <Modal.Title className="modal-header p-2">Instructions</Modal.Title>
+          <Modal.Header className="!p-2 !justify-center">
+            <Modal.Title className="modal-header p-2">
+              Part 2/3 of Essay Writing Study
+            </Modal.Title>
           </Modal.Header>
-          <Modal.Body className='pl-8'>
-            <ul className='list-disc'>
+          <Modal.Body className="pl-8">
+            <h3 className='font-bold mb-2'>Instructions:</h3>
+            <ul className="list-disc">
               <li>
-              The text box on this website starts recording immediately, any
-              operations made will be recorded.
+                The text box on this website starts recording immediately, any
+                operations made will be recorded.
               </li>
               <li>
-              There is a stopwatch
-              in the bottom left corner. Please do not spend any longer than
-              30-40 minutes writing your essay.
-              </li> 
-              <li>
-              If you wish to use ChatGPT please click the ChatGPT tab and ask questions
+                There is a stopwatch in the bottom left corner. Please do not
+                spend any longer than 30-40 minutes writing your essay.
               </li>
               <li>
-              If you leave the webpage we will not store your
-              data, so you will lose your response.
+                If you wish to use ChatGPT please click the ChatGPT tab and ask
+                questions. Do not use ChatGPT in your browser, use the one we
+                provided.
               </li>
               <li>
-              Upon completion of the essay, hit
-              the submit button. Only hit the submission
-              button once at the end to not overwrite your data.
+                Please imagine this is a class assignment that would be submitted for a grade. Try to do your best for a good grade.
               </li>
               <li>
-              Upon submission
-              you will be redirected to an exit survey. If you were not
-              redirected, please contact the researcher. The redirect is
-              considered a pop-up so it might be blocked.
+                If you leave the webpage we will not store your data, so you
+                will lose your response.
               </li>
-
+              <li>
+                Upon completion of the essay, hit the submit button. Only hit
+                the submission button once at the end to not overwrite your
+                data.
+              </li>
+              <li>
+                Upon submission you will be redirected to an exit survey (part
+                3/3). If you were not redirected, please contact the researcher.
+                The redirect is considered a pop-up so it might be blocked.
+              </li>
             </ul>
-            <div className='flex mt-4 justify-center'>
-            <Button variant="secondary" type="submit" onClick={onFormSubmit}>
-              Start
-            </Button>
+            <div className="flex mt-4 justify-center">
+              <Button variant="secondary" type="submit" onClick={onFormSubmit}>
+                Start
+              </Button>
             </div>
-
           </Modal.Body>
         </Modal>
+        <div className="margins">
+          <div className="text-black flex justify-end">
+            <div>{formatTime(time)}</div>
+            <div className="mt-2"></div>
+          </div>
+        </div>
         <Row className="justify-content pr-0">
           <Tabs
             justify
@@ -253,12 +264,7 @@ export default function Webpage() {
             onSelect={handleTabChange}
           >
             <Tab eventKey="prompt" title="Writing" className="content">
-              <div className="margins">
-                <div className="fixed bottom-0 left-0 m-4 p-4 bg-gray-800 text-white rounded-lg">
-                  <div>{formatTime(time)}</div>
-                  <div className="mt-2"></div>
-                </div>
-              </div>
+              <div className="margins"></div>
               <div className="flex justify-between gap-4">
                 <div className="question flex flex-col gap-6 border border-black">
                   <span className="body-text-small">
@@ -278,25 +284,26 @@ export default function Webpage() {
                   </span>
                   <span>
                     <h2 className="font-bold">Intelligent Machines</h2>
+                    <span className="my-1 body-text-small-dark">
+                      Many of the goods and services we depend on daily are now
+                      supplied by intelligent, automated machines rather than
+                      human beings. Robots build cars and other goods on
+                      assembly lines, where once there were human workers. Many
+                      of our phone conversations are now conducted not with
+                      people but with sophisticated technologies. We can now buy
+                      goods at a variety of stores without the help of a human
+                      cashier. Automation is generally seen as a sign of
+                      progress, but what is lost when we replace humans with
+                      machines? Given the accelerating variety and prevalence of
+                      intelligent machines, it is worth examining the
+                      implications and meaning of their presence in our lives.
+                    </span>
                   </span>
-                  <span className="body-text-small-dark">
-                    Many of the goods and services we depend on daily are now
-                    supplied by intelligent, automated machines rather than
-                    human beings. Robots build cars and other goods on assembly
-                    lines, where once there were human workers. Many of our
-                    phone conversations are now conducted not with people but
-                    with sophisticated technologies. We can now buy goods at a
-                    variety of stores without the help of a human cashier.
-                    Automation is generally seen as a sign of progress, but what
-                    is lost when we replace humans with machines? Given the
-                    accelerating variety and prevalence of intelligent machines,
-                    it is worth examining the implications and meaning of their
-                    presence in our lives.
-                  </span>
-                  <p></p>
-                  <div className="grid grid-cols-[2fr_1fr] gap-4">
-                    <div className="mb-3 pr-5 border-r border-black">
-                      <h3 className="font-bold">Perspective One</h3>
+                  <div className="flex flex-col gap-4">
+                    <div className="mb-3 border-black">
+                      <h3 className="font-bold">
+                        Perspective One (Dystopian view)
+                      </h3>
                       <span className="body-text-small-dark">
                         What we lose with the replacement of people by machines
                         is some part of our own humanity. Even our mundane daily
@@ -304,14 +311,17 @@ export default function Webpage() {
                         respect, and tolerance for other people.
                       </span>
                     </div>
-                    <div className="mb-3">
+                    {/* <div className="mb-3">
                       <h3 className="font-bold">Meaning</h3>
                       <span className="body-text-small-dark">
-                        Intelligent machines are a detriment to humanity.
-                      </span>
-                    </div>
-                    <div className="my-3 pr-5 border-r border-black">
-                      <h3 className="font-bold">Perspective Two</h3>
+                      Intelligent machines are a detriment to humanity.
+                      (Intelligent machines are bad)
+                      </span> 
+                    </div>*/}
+                    <div className="my-3 border-black">
+                      <h3 className="font-bold">
+                        Perspective Two (Utilitarian view)
+                      </h3>
                       <span className="body-text-small-dark">
                         Machines are good at low-skill, repetitive jobs, and at
                         high-speed, extremely precise jobs. In both cases they
@@ -319,14 +329,17 @@ export default function Webpage() {
                         prosperous and progressive world for everyone.
                       </span>
                     </div>
-                    <div className="my-3">
+                    {/* <div className="my-3">
                       <h3 className="font-bold">Meaning</h3>
                       <span className="body-text-small-dark">
                         In some areas, machines replacing humans is better.
+                        (There are some uses for machines)
                       </span>
-                    </div>
-                    <div className="mt-3 pr-5 border-r border-black">
-                      <h3 className="font-bold">Perspective Three</h3>
+                    </div> */}
+                    <div className="mt-3 border-black">
+                      <h3 className="font-bold">
+                        Perspective Three (Progressive view)
+                      </h3>
                       <span className="body-text-small-dark">
                         Intelligent machines challenge our long-standing ideas
                         about what humans are or can be. This is good because it
@@ -334,13 +347,14 @@ export default function Webpage() {
                         possibilities.
                       </span>
                     </div>
-                    <div className="mt-3">
+                    {/* <div className="mt-3">
                       <h3 className="font-bold">Meaning</h3>
                       <span className="body-text-small-dark">
                         Machines are very beneficial to society and human
                         technological advancement.
+                        (Machines are a huge benefit)
                       </span>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 <div className="editors border border-black">
