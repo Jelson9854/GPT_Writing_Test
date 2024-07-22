@@ -421,7 +421,7 @@ export default function Webpage() {
                   <Button
                     type="submit"
                     variant="ghost"
-                    className="!bg-transparent p-0 m-0 h-[40px] w-[40px]"
+                    className="!bg-transparent chat-btn p-0 m-0 h-[40px] w-[40px]"
                   >
                     <FaArrowAltCircleUp size={40} />
                   </Button>

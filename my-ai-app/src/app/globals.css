@@ -316,6 +316,11 @@ textarea {
   color: white;
 
 }
+
+.chat-btn {
+  color: black !important;
+  background-color: transparent !important;
+}
 /* button {
   background-color: #10a37f;
   color: black;
