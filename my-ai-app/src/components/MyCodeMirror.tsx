@@ -33,6 +33,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
     const codeMirrorInstanceRef = useRef<CodeMirror.Editor | null>(null);
     const countRef = useRef<number>(0);
     const [modalShow, setModalShow] = useState(false);
+    const exitUrl = "https://virginiatech.questionpro.com/GPTWritingExitSurvey?ext_ref=" + user_email;
 
     useEffect(() => {
       if (typeof window !== "undefined" && codeMirrorRef.current && countRef.current === 0) {
@@ -90,7 +91,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
               // let cont = window.confirm("Thank you for your submission. Please fill out the exit survey \n\nYour participation is greatly appreciated!");
               // if(cont)
               //   {
-              window.open("https://virginiatech.questionpro.com/GPTWritingExitSurvey?ext_ref="+ user_email)
+              window.open(exitUrl, "_blank");
               //   }
             })
             .catch((error) => {
@@ -128,7 +129,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
         <br />
         Please fill out the exit survey. You should be redirected in a moment.
         <br />
-        If you were not redirected. Please take the exit survey at <a href="https://virginiatech.questionpro.com/GPTWritingExitSurvey" target="_blank">https://virginiatech.questionpro.com/GPTWritingExitSurvey</a>.
+        If you were not redirected. Please take the exit survey at <a href={exitUrl} target="_blank">https://virginiatech.questionpro.com/GPTWritingExitSurvey</a>.
         </Modal.Body>
       </Modal>
       <div>
