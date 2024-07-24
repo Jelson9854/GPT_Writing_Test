@@ -4,7 +4,9 @@ import React, {
   useCallback,
   useImperativeHandle,
   forwardRef,
+  useState,
 } from "react";
+import { Modal } from 'react-bootstrap';
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material-darker.css"; // Example theme
 import CodeMirror from "codemirror";
@@ -30,6 +32,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
     const codeRecorderRef = useRef<CodeRecordInstance | null>(null);
     const codeMirrorInstanceRef = useRef<CodeMirror.Editor | null>(null);
     const countRef = useRef<number>(0);
+    const [modalShow, setModalShow] = useState(false);
 
     useEffect(() => {
       if (typeof window !== "undefined" && codeMirrorRef.current && countRef.current === 0) {
@@ -52,7 +55,9 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
     }, []);
 
     const handleSubmission = useCallback(() => {
-      const isConfirmed = window.confirm("Are you sure you want to submit? Please wait for the popup window to appear for the exit survey.");
+      // const isConfirmed = window.confirm("Are you sure you want to submit? Please wait for the popup window to appear for the exit survey.");
+      const isConfirmed = true;
+      setModalShow(true);
       if (isConfirmed && codeRecorderRef.current) {
         // Retrieve the final text
         const lines = codeMirrorInstanceRef.current?.getValue().split("\n");
@@ -82,11 +87,11 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
             .sendToDB(recordsArray, finText)
             .then((response) => {
               console.log("Data sent successfully:", response);
-              let cont = window.confirm("Thank you for your submission. Please fill out the exit survey \n\nYour participation is greatly appreciated!");
-              if(cont)
-                {
-                  window.open("https://virginiatech.questionpro.com/GPTWritingExitSurvey?ext_ref="+ user_email, '_blank')
-                }
+              // let cont = window.confirm("Thank you for your submission. Please fill out the exit survey \n\nYour participation is greatly appreciated!");
+              // if(cont)
+              //   {
+              window.open("https://virginiatech.questionpro.com/GPTWritingExitSurvey?ext_ref="+ user_email)
+              //   }
             })
             .catch((error) => {
               console.error("Error sending data:", error);
@@ -109,6 +114,23 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
     }));
 
     return (
+      <>
+      <Modal
+        show={modalShow}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header>
+          <Modal.Title>Thank you for your submission!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        Your participation is greatly appreciated!
+        <br />
+        Please fill out the exit survey. You should be redirected in a moment.
+        <br />
+        If you were not redirected. Please take the exit survey at https://virginiatech.questionpro.com/GPTWritingExitSurvey.
+        </Modal.Body>
+      </Modal>
       <div>
         <div className="border-b border-black" ref={codeMirrorRef}></div>
         <div className="control-buttons">
@@ -121,6 +143,8 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
           </button>
         </div>
       </div>
+      </>
+
     );
   }
 );
