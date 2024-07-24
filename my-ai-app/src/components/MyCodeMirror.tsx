@@ -129,7 +129,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
         <br />
         Please fill out the exit survey. You should be redirected in a moment.
         <br />
-        If you were not redirected. Please take the exit survey at <a href={exitUrl} target="_blank">https://virginiatech.questionpro.com/GPTWritingExitSurvey</a>.
+        If you were not redirected. Please take the exit survey at <a href={exitUrl} target="_blank">{exitUrl}</a>.
         </Modal.Body>
       </Modal>
       <div>
