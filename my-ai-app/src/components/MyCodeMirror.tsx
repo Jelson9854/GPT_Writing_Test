@@ -6,12 +6,12 @@ import React, {
   forwardRef,
   useState,
 } from "react";
-import { Modal } from 'react-bootstrap';
+import { Modal } from "react-bootstrap";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material-darker.css"; // Example theme
 import CodeMirror from "codemirror";
 import { CodeRecord } from "codemirror-record"; // Ensure this is the correct import
-import 'codemirror-spell-checker';
+import "codemirror-spell-checker";
 
 interface MyCodeMirrorComponentProps {
   email: string | null;
@@ -33,24 +33,30 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
     const codeMirrorInstanceRef = useRef<CodeMirror.Editor | null>(null);
     const countRef = useRef<number>(0);
     const [modalShow, setModalShow] = useState(false);
-    const exitUrl = "https://virginiatech.questionpro.com/GPTWritingExitSurvey?ext_ref=" + user_email;
+    const exitUrl =
+      "https://virginiatech.questionpro.com/GPTWritingExitSurvey?ext_ref=" +
+      user_email;
 
     useEffect(() => {
-      if (typeof window !== "undefined" && codeMirrorRef.current && countRef.current === 0) {
+      if (
+        typeof window !== "undefined" &&
+        codeMirrorRef.current &&
+        countRef.current === 0
+      ) {
         const codeMirrorInstance = CodeMirror(codeMirrorRef.current, {
           lineNumbers: false,
           lineWrapping: true,
           theme: "elegant",
           spellcheck: true,
         });
-    
+
         countRef.current += 1;
-    
+
         codeMirrorInstanceRef.current = codeMirrorInstance;
-    
+
         const codeRecorder = new CodeRecord(codeMirrorInstance);
         codeRecorder.listen();
-    
+
         codeRecorderRef.current = codeRecorder;
       }
     }, []);
@@ -116,36 +122,45 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
 
     return (
       <>
-      <Modal
-        show={modalShow}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Header>
-          <Modal.Title>Thank you for your submission!</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        Your participation is greatly appreciated!
-        <br />
-        Please fill out the exit survey. You should be redirected in a moment.
-        <br />
-        If you were not redirected. Please take the exit survey at <a href={exitUrl} target="_blank">{exitUrl}</a>.
-        </Modal.Body>
-      </Modal>
-      <div>
-        <div className="border-b border-black" ref={codeMirrorRef}></div>
-        <div className="control-buttons">
-          <button
-            id="submission"
-            className="btn btn-primary"
-            onClick={() => handleSubmission()}
-          >
-            Submit Everything
-          </button>
+        <Modal show={modalShow} backdrop="static" keyboard={false}>
+          <Modal.Header>
+            <Modal.Title>Thank you for your submission!</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Your participation is greatly appreciated!</p>
+            <br />
+            <p>
+              Please fill out the exit survey. You should be redirected in a
+              moment.
+            </p>
+            <br />
+            <p>
+              If you were not redirected, please take the exit survey at{" "}
+              <a
+                href={exitUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline"
+              >
+                {exitUrl}
+              </a>
+              .
+            </p>
+          </Modal.Body>
+        </Modal>
+        <div>
+          <div className="border-b border-black" ref={codeMirrorRef}></div>
+          <div className="control-buttons">
+            <button
+              id="submission"
+              className="btn btn-primary"
+              onClick={() => handleSubmission()}
+            >
+              Submit Everything
+            </button>
+          </div>
         </div>
-      </div>
       </>
-
     );
   }
 );
