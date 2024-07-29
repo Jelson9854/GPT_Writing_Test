@@ -216,29 +216,29 @@ export default function Webpage() {
                 operations made will be recorded.
               </li>
               <li>
-                There is a stopwatch in the bottom left corner. Please do not
-                spend any longer than 30-40 minutes writing your essay.
+                There is a stopwatch (time elapsed) in the top right corner. Please do not
+                spend any longer than <b>30-40 minutes</b> writing your essay.
               </li>
               <li>
-                If you wish to use ChatGPT please click the ChatGPT tab and ask
+                <b>If you wish to use ChatGPT, please click the ChatGPT tab and ask
                 questions. Do not use ChatGPT in your browser, use the one we
-                provided.
+                provided.</b>
               </li>
               <li>
                 Please imagine this is a class assignment that would be submitted for a grade. Try to do your best for a good grade.
               </li>
               <li>
-                If you leave the webpage we will not store your data, so you
+                If you leave the webpage we will <b>NOT</b> store your data, so you
                 will lose your response.
               </li>
               <li>
-                Upon completion of the essay, hit the submit button. Only hit
+                Upon completion of the essay, hit the <b>submit button</b>. Only hit
                 the submission button once at the end to not overwrite your
                 data.
               </li>
               <li>
-                Upon submission you will be redirected to an exit survey (part
-                3/3). If you were not redirected, please contact the researcher.
+                <b>Upon submission you will be redirected to an exit survey (part
+                3/3).</b> If you were not redirected, please contact the researcher.
                 The redirect is considered a pop-up so it might be blocked.
               </li>
             </ul>
