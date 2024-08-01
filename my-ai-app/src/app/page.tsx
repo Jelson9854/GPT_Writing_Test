@@ -232,6 +232,14 @@ export default function Webpage() {
                 will lose your response.
               </li>
               <li>
+                You must write in the editor. The submission will <b>NOT</b> be included for research or compensation
+                if it is written elsewhere (Google Docs, Microsoft Word, etc.). <b>Do not paste your submission in prewritten.</b>
+              </li>
+              <li>
+                If the submission is a direct copy of a different submission, it will <b>NOT</b> be 
+                included for research or compensation.
+              </li>
+              <li>
                 Upon completion of the essay, hit the <b>submit button</b>. Only hit
                 the submission button once at the end to not overwrite your
                 data.
