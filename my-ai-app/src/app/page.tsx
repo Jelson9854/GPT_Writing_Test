@@ -37,6 +37,7 @@ export default function Webpage() {
   const [show, setShow] = useState(true);
   const [text, setText] = useState("");
   const [copiedTexts, setCopiedTexts] = useState<CopiedText[]>([]);
+  const [pastedTexts, setPastedTexts] = useState<CopiedText[]>([]);
   const [tab, setTab] = useState("prompt");
   const [tempVar, setTempVar] = useState("prompt");
   const [tabLog, setTabLog] = useState<TimerThing[]>([]);
@@ -115,6 +116,46 @@ export default function Webpage() {
     };
   }, []);
   // Ensure to include 'tab' in the dependency array for useEffect
+
+
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const pastedText = e.clipboardData?.getData("text");
+      if (pastedText) {
+        const timestamp = new Date().toISOString();
+  
+        let currentTab = "prompt"; // Default to 'prompt' if not within 'editors' or 'gpt'
+  
+        // Check if the paste event occurs within an element with the class 'editors'
+        const targetElement = e.target as Element | null;
+        const isWithinEditors = targetElement?.closest(".editors");
+  
+        // Check if the paste event occurs within the GPT tab
+        const isWithinGptTab = targetElement?.closest(".gpt_tab"); // Example class for GPT tab
+  
+        if (isWithinEditors) {
+          currentTab = "editor"; // Set the tab to 'editor' if within 'editors'
+          console.log(currentTab);
+        } else if (isWithinGptTab) {
+          currentTab = "gpt"; // Set the tab to 'gpt' if within the GPT tab
+          console.log(currentTab);
+        } else {
+          currentTab = "prompt"; // Default to 'prompt' if not within 'editors' or 'gpt'
+          console.log(currentTab);
+        }
+  
+        // Create the pasted text item
+        let item = { time: timestamp, text: pastedText, tab: currentTab };
+        setPastedTexts((prevTexts) => [...prevTexts, item]);
+      }
+    };
+  
+    document.addEventListener("paste", handlePaste);
+  
+    return () => {
+      document.removeEventListener("paste", handlePaste);
+    };
+  }, []);
 
   useEffect(() => {
     window.addEventListener("beforeunload", function (e) {
@@ -375,6 +416,7 @@ export default function Webpage() {
                         recordingData,
                         fintext,
                         copiedTexts,
+                        pastedTexts,
                         tabLog,
                         ID
                       )
@@ -465,6 +507,7 @@ async function sendToDB(
   recording,
   text,
   copies,
+  pastes,
   timers,
   objectId
 ) {
@@ -479,6 +522,7 @@ async function sendToDB(
         email: user_email,
         mess_array: mess,
         copy_array: copies,
+        paste_array: pastes,
         timer_array: timers,
       }
     );
