@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 8080;
 
 const corsOptions = {
  	origin: 'https://gptwriting.cs.vt.edu',
- 	methods: '[POST]',
+ 	methods: ['POST'],
  	credentials: true
  };
 
