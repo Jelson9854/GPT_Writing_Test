@@ -536,7 +536,7 @@ async function sendToDB(
   }
 }
 
-async function sendEmail(user_email, objectId, startTime) {
+async function sendEmail(user_email: string, objectId: string, startTime: string): Promise<void> {
   const timestamp = new Date().toISOString();
   try {
     const emailResponse = await axios.post(
@@ -547,9 +547,23 @@ async function sendEmail(user_email, objectId, startTime) {
         start: timestamp,
       }
     );
-    console.log("Email saved to databases: ", emailResponse.data);
-  } catch (error) {
-    console.error("Error saving data: ", error);
-    throw error;
+    console.log("Email saved to database: ", emailResponse.data);
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      // Handles Axios-specific error
+      if (error.response) {
+        console.error('Server responded with:', error.response.status, error.response.data);
+      } else if (error.request) {
+        console.error('No response received:', error.request);
+      } else {
+        console.error('Axios error:', error.message);
+      }
+    } else if (error instanceof Error) {
+      // Handles generic errors
+      console.error('Unexpected error:', error.message);
+    } else {
+      console.error('An unknown error occurred:', error);
+    }
   }
 }
+
