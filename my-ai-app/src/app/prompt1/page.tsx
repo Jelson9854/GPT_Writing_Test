@@ -74,7 +74,7 @@ export default function Webpage() {
     setShow(false); // Close the modal here
     setTabLog((prevLogs) => [...prevLogs, { tab: "prompt", time: timestamp }]);
     setRunning(true);
-    sendEmail(user_email, ID, timestamp);
+    sendEmail(user_email, ID);
   };
 
   useEffect(() => {
@@ -536,7 +536,7 @@ async function sendToDB(
   }
 }
 
-async function sendEmail(user_email: string, objectId: string, startTime: string): Promise<void> {
+async function sendEmail(user_email: string | null, objectId: string): Promise<void> {
   const timestamp = new Date().toISOString();
   try {
     const emailResponse = await axios.post(
