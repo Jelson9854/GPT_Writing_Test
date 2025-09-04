@@ -10,7 +10,7 @@ Initialize the environment and install dependencies
 pnpm i
 ```
 
-You can use yarn or pnpm if desired (I don't recall the syntax)
+You can use yarn or npm if desired (I don't recall the syntax)
 
 After initializing run the following command to start the environment
 
