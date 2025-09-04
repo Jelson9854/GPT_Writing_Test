@@ -4,7 +4,7 @@ Each folder will need to be run for the project to be successful
 
 ## My-ai-app instructions
 
-Initialize the environment and install dependencies
+Initialize the environment and install dependencies (in the my-ai-app folder)
 
 ```bash
 pnpm i
