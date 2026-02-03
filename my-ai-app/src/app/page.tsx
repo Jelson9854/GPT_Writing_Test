@@ -10,10 +10,15 @@ import {
   Form,
   Button,
 } from "react-bootstrap";
-import MyCodeMirrorComponent from "../components/MyCodeMirror";
 import { useChat } from "ai/react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { v4 as uuidv4 } from "uuid";
+
+const MyCodeMirrorComponent = dynamic(
+  () => import("../components/MyCodeMirror"),
+  { ssr: false }
+);
 import { FaArrowAltCircleUp } from "react-icons/fa";
 
 type CopiedText = {

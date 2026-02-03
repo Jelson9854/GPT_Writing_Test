@@ -11,8 +11,6 @@ import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material-darker.css"; // Example theme
 import CodeMirror from "codemirror";
 import { CodeRecord } from "codemirror-record"; // Ensure this is the correct import
-import "codemirror-spell-checker";
-
 interface MyCodeMirrorComponentProps {
   email: string | null;
   sendToDB: (recording: any, fintext: any) => Promise<any>;
@@ -43,6 +41,7 @@ const MyCodeMirrorComponent = forwardRef<any, MyCodeMirrorComponentProps>(
         codeMirrorRef.current &&
         countRef.current === 0
       ) {
+        import("codemirror-spell-checker");
         const codeMirrorInstance = CodeMirror(codeMirrorRef.current, {
           lineNumbers: false,
           lineWrapping: true,
